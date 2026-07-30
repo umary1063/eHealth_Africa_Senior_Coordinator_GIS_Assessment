@@ -4,9 +4,29 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-
 import psycopg
 from psycopg import Connection
+
+from src.project_paths import local_environment_file
+
+
+def load_local_environment() -> None:
+    """Load optional local database variables from the Git-ignored Q1 env file."""
+    environment_path = local_environment_file()
+    if not environment_path.is_file():
+        return
+
+    for line in environment_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            raise ValueError(f"Invalid environment entry in {environment_path.name}: {line.split()[0]!r}")
+        key, value = line.split("=", 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+load_local_environment()
 
 
 @dataclass(frozen=True)

@@ -1,4 +1,12 @@
 name: eha_gis_assessment
 channels:
   - conda-forge
-dependencies: []
+dependencies:
+  - python=3.11
+  - pandas
+  - geopandas
+  - shapely
+  - fiona
+  - psycopg
+  - matplotlib
+  - jupyterlab
