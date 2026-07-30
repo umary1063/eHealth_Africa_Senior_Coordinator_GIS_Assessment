@@ -121,24 +121,26 @@ def evaluate_gps_quality(
     points["sequence_gap_minutes"] = (points["observed_at"] - points["previous_observed_at"]).dt.total_seconds() / 60
 
     valid_pair = points[["longitude", "latitude", "previous_longitude", "previous_latitude"]].notna().all(axis=1)
-    points["calculated_distance_m"] = pd.NA
+    # Use NumPy-compatible NaN for derived numeric measures.  ``pd.NA`` cannot
+    # be safely converted with ``astype(float)`` in the comparisons below.
+    points["calculated_distance_m"] = float("nan")
     points.loc[valid_pair, "calculated_distance_m"] = points.loc[valid_pair].apply(
         lambda row: _haversine_m(row["previous_longitude"], row["previous_latitude"], row["longitude"], row["latitude"]),
         axis=1,
     )
     valid_interval = points["sequence_gap_minutes"] > 0
-    points["calculated_speed_kmh"] = pd.NA
+    points["calculated_speed_kmh"] = float("nan")
     points.loc[valid_pair & valid_interval, "calculated_speed_kmh"] = (
         points.loc[valid_pair & valid_interval, "calculated_distance_m"].astype(float)
         / (points.loc[valid_pair & valid_interval, "sequence_gap_minutes"] / 60)
     )
 
     points["impossible_speed_flag"] = (
-        (points["calculated_speed_kmh"].astype(float) > config.maximum_plausible_speed_kmh)
+        (points["calculated_speed_kmh"] > config.maximum_plausible_speed_kmh)
         | (points["speed_kmh"] > config.maximum_plausible_speed_kmh)
     ).fillna(False)
     points["reported_speed_disagreement_flag"] = (
-        (points["calculated_speed_kmh"].astype(float) - points["speed_kmh"]).abs()
+        (points["calculated_speed_kmh"] - points["speed_kmh"]).abs()
         > config.reported_speed_disagreement_kmh
     ).fillna(False)
     points["accuracy_quality_flag"] = (
