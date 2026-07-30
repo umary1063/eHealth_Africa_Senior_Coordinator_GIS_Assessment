@@ -44,7 +44,7 @@ GPS points are ordered by team, logger, timestamp, and point identifier. Coordin
 
 ## Settlement Attribution Methodology
 
-_To be completed during implementation._
+Settlement attribution uses deterministic nearest-settlement proximity in PostGIS after transforming source EPSG:4326 geometry to EPSG:32632 for metre-based calculations. Validated results were 214 visited settlements for the 30 m baseline, 241 for the 60 m sensitivity scenario, and 216 for the urban accuracy-aware scenario. The 30 m baseline is the primary operational estimate; the 60 m scenario is retained to show sensitivity, while the urban adjustment does not materially change conclusions. Visit evidence is reconstructed from continuous, non-ambiguous team/date/settlement episodes; raw GPS records remain unchanged.
 
 ## Coverage Reconciliation Methodology
 

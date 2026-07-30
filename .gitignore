@@ -27,6 +27,9 @@ Q1_Campaign_Team_Tracking/outputs/*
 !Q1_Campaign_Team_Tracking/outputs/tables/
 Q1_Campaign_Team_Tracking/outputs/tables/*
 !Q1_Campaign_Team_Tracking/outputs/tables/data_audit_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/settlement_attribution_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/settlement_visit_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/attribution_scenario_comparison.csv
 
 # Operating-system files
 .DS_Store

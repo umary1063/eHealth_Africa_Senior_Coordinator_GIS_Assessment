@@ -29,3 +29,17 @@ The ingestion registry records the source-file path and SHA256 checksum for each
 `COPY` is used to stream each bounded CSV batch into a temporary PostgreSQL staging table, avoiding the unstable client-side bulk insert path observed on Windows. The staged rows are merged into the raw table within the same file-level transaction. The registry entry is written only after every batch has copied and merged successfully; an exception rolls back the file transaction and logs the failed filename.
 
 Validation note: on a first run, the log reports the source and raw row counts for each loaded file. On a second run, the matching SHA256 checksum is detected and the same file is logged as skipped.
+
+## Reference Data Ingestion
+
+`ingest_reference_data.py` loads the supplied `boundaries.gpkg` and `settlement_masterlist.csv` into the PostGIS reference and raw layers before settlement attribution. It validates settlement identifiers and coordinates, retains EPSG:4326 geometry, repairs a boundary geometry only when required for loading, and upserts records inside one transaction. It prints source, loaded, duplicate-key, null-geometry, invalid-geometry, and repair counts.
+
+The reference loader uses `pg8000`, a pure-Python PostgreSQL backend, in `reference_db_connection.py`. This is intentionally separate from the Psycopg connection used by the validated GPS pipeline and Notebook 02, avoiding the Windows native connection crash in the reference-loading command.
+
+Run from the Q1 root with an explicit source directory:
+
+```text
+python -m src.ingestion.ingest_reference_data --source-dir <supplied_Q1_directory>
+```
+
+This separation keeps Notebook 03 focused on database-resident attribution and avoids file-system and database-loading side effects in an analytical notebook.

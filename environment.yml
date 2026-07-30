@@ -8,5 +8,6 @@ dependencies:
   - shapely
   - fiona
   - psycopg
+  - pg8000
   - matplotlib
   - jupyterlab

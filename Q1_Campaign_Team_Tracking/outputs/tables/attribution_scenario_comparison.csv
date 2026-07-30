@@ -1,0 +1,4 @@
+scenario_name,visited,ambiguous,unvisited,visited_change_from_baseline,ambiguous_change_from_baseline
+baseline_30m,214,180,2168,0,0
+sensitivity_60m,241,225,2096,27,45
+urban_accuracy_aware,216,181,2165,2,1

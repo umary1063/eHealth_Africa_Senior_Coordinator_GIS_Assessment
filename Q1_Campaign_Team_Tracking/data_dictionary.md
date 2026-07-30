@@ -14,6 +14,7 @@ This dictionary records the confirmed source dataset structure and the descripti
 - **Size:** 2,562 records.
 - **Fields:** `settlement_id`, `settlement_name`, `settlement_type`, `ward_code`, `ward_name`, `lga_code`, `lga_name`, `longitude`, `latitude`, `target_population_under5`.
 - **Audit findings:** No duplicate `settlement_id` values and no records with missing coordinates were recorded.
+- **Attribution use:** `settlement_id` is the settlement-attribution key; coordinates are retained in EPSG:4326 and transformed to EPSG:32632 for distance calculations.
 
 ## E-Tally
 
