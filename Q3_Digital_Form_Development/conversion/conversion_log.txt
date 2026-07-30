@@ -1,0 +1,55 @@
+HH2026_v1 XLSForm -> XForm conversion log
+==========================================
+
+Command:
+    python -m pyxform.xls2xform form/HH2026_v1.xlsx conversion/HH2026_v1.xml
+
+Tool versions used:
+    Python  3.14.6
+    pyxform 4.5.0
+    Java (Eclipse Temurin) 21.0.12+8 -- required by pyxform for the bundled
+        ODK Validate (org.opendatakit.validate) structural/XPath check; the
+        conversion invokes it automatically whenever Java is on PATH.
+
+Output:
+    Warnings:
+    Language 'Hausa (ha)' is missing the survey constraint_message column.
+    [row : 67] Use the max-pixels parameter to speed up submission sending and save storage space. Learn more: https://xlsform.org/#image
+    Conversion complete!
+
+Exit code: 0
+
+Interpretation
+--------------
+Both warnings are non-blocking and already tracked deliberately, not
+oversights:
+
+1. "Hausa is missing constraint_message" -- constraint_message text was
+   written only in English (en). Per the language policy in
+   documentation/06_language_and_translation.md, constraint/error messages
+   are exactly the kind of clinically/procedurally precise text I chose not
+   to guess a Hausa translation for rather than risk an enumerator
+   misunderstanding why the form rejected an entry. A qualified translator
+   must add these before deployment; the column exists and is ready to
+   receive them (documentation/11_scope_and_omissions.md).
+
+2. "Use max-pixels" is a storage/bandwidth tuning suggestion for the single
+   image field (antibiotic_photo_file, Q4.16 evidence photo) -- relevant
+   given the 9-day offline / 2GB-device constraint, and picked up as a
+   to-do in documentation/11_scope_and_omissions.md rather than fixed
+   silently here, since the right ceiling depends on device storage
+   headroom the data pack does not state.
+
+No errors were raised. The form converts cleanly, including the bundled
+Java-based ODK Validate structural check (the same validator ODK Central
+and Briefcase run before accepting a form), which was not available by
+default in this environment and was installed for this validation run
+(Eclipse Temurin 21 JRE via winget) rather than skipped with
+--skip_validate.
+
+Reproduce
+---------
+    pip install pyxform==4.5.0
+    # Java 8+ on PATH (required for the ODK Validate step; omit
+    # --odk_validate below, or pass --skip_validate, to convert without it)
+    python -m pyxform.xls2xform form/HH2026_v1.xlsx conversion/HH2026_v1.xml

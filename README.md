@@ -19,6 +19,7 @@ This repository contains a technical assessment submission demonstrating advance
 - [Assessment Overview](#assessment-overview)
 - [Technical Architecture](#technical-architecture)
 - [Q1 Campaign Tracking](#q1--campaign-team-tracking-and-coverage-reconciliation)
+- [Q3 Digital Form Development](#q3--digital-form-development)
 - [Technical Stack](#technical-stack)
 - [Repository Structure](#repository-structure)
 - [Reproducibility Principles](#reproducibility-principles)
@@ -31,9 +32,9 @@ This repository contains a technical assessment submission demonstrating advance
 
 | Module | Capability Demonstrated | Status |
 |---|---|---|
-| Q1 | Campaign GPS tracking, settlement reconciliation, spatial statistics | In Development |
+| Q1 | Campaign GPS tracking, settlement reconciliation, spatial statistics | Complete |
 | Q2 | Facility accessibility and spatial database modelling | Planned |
-| Q3 | Digital survey instrument engineering | Planned |
+| Q3 | Digital survey instrument engineering | Complete |
 | Q4 | Complex survey inference | Planned |
 | Q5 | Technical coordination and delivery management | Planned |
 | Q6 | Capability development framework | Planned |
@@ -86,11 +87,30 @@ Raw GPS observations
 → decision products
 ```
 
-Implementation is underway. The work will retain raw observations, document quality rules and assumptions, and distinguish analytical evidence from programme reporting before producing decision-support outputs.
+Q1 implementation is complete. The workflow retains raw observations, documents quality rules and assumptions, and distinguishes analytical evidence from programme reporting in its decision-support outputs.
 
 Requirement 5 uses the `baseline_30m` GPS classification for 2,382 non-ambiguous planned settlements (2,168 unvisited and 214 visited). Under binary, row-standardized k=8 nearest-neighbour weights in EPSG:32632, Global Moran's I was 0.046612 (expected I -0.000420; z-score 4.821064; 999-permutation p-value 0.001). This supports positive global autocorrelation in the observed GPS-derived missed-settlement indicator. No Local Moran result survived Benjamini-Hochberg FDR correction; raw local patterns are exploratory screening signals, not confirmed hotspots.
 
 Final Q1 decision products distinguish observed evidence from programme-performance inference. A missing GPS track is not treated as proof of a missed settlement; recommendations state evidence confidence and direct supervisors to verify, inspect devices, reconcile reporting, and confirm repeat visits before mop-up deployment.
+
+---
+
+## Q3 — Digital Form Development
+
+`Household_Questionnaire_HH2026v1.docx` converted to a deployable ODK XLSForm
+(`Q3_Digital_Form_Development/form/HH2026_v1.xlsx`), validated with pyxform 4.5.0 against
+ODK Validate — conversion output and log committed in `Q3_Digital_Form_Development/conversion/`.
+
+Beyond a faithful digitisation, the submission documents nine defects found in the paper
+instrument (an internal contradiction, a missing skip instruction, and unanalysable data among
+them — `Q3_Digital_Form_Development/documentation/01_defects_report.md`), a 25-row constraint
+register tracing every added rule to its source or to an explicitly stated judgement call, a
+sentinel/measurement collision found in the anthropometry questions and fixed by field-splitting
+rather than a magic number, a proof (not just a demonstration) that the specimen label's
+modulus-11 check digit catches every adjacent-digit transposition, and an honest answer to
+whether a self-contained form can detect a duplicate specimen label across nine offline days
+(it cannot, in full — the achievable part is implemented, the rest is described as an
+architecture, not claimed as done).
 
 ---
 

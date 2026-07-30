@@ -1,0 +1,44 @@
+id,area,field(s),test_type,input,expected_result,notes
+T01,specimen label,specimen_label,positive,"BSN480012-6 (team TM01, checksum verified by scripts/checkdigit_reference.py)",Accepted,"Valid format, in-range, correct check digit"
+T02,specimen label,specimen_label,negative,"BSN480021-6 (body transposed from 480012, check digit not recomputed)",Rejected,"Recomputed check digit for 480021 is 7, not 6 -- see documentation/04_specimen_label_validation.md"
+T03,specimen label,specimen_label,negative,"BSN480900-2 entered on a TM01 device (TM01 range is 480000-480899)",Rejected,"Correctly formatted, correct check digit, but outside the enumerator's own team range"
+T04,specimen label,specimen_label,negative,BSN48001-1 (5-digit body),Rejected,Fails format regex
+T05,specimen label,specimen_label,negative,BSN480001X1 (missing hyphen),Rejected,Fails format regex
+T06,specimen label duplicate,specimen_label (2nd child in same household),negative,"Child A gets BSN480012-6; Child B in the same household roster also gets BSN480012-6",Rejected on Child B's entry,"Within-submission duplicate check, documentation/05_duplicate_label_detection.md"
+T07,anthropometry boundary,c_weight_kg,positive,2.0,Accepted,Lower bound of range
+T08,anthropometry boundary,c_weight_kg,negative,1.9,Rejected,Just below lower bound
+T09,anthropometry boundary,c_weight_kg,positive,30.0,Accepted,Upper bound of range
+T10,anthropometry boundary,c_weight_kg,negative,30.1,Rejected,Just above upper bound
+T11,anthropometry boundary,c_height_cm,positive,45.0,Accepted,Lower bound of range
+T12,anthropometry boundary,c_height_cm,negative,44.9,Rejected,Just below lower bound
+T13,anthropometry boundary,c_height_cm,positive,130.0,Accepted,Upper bound of range
+T14,anthropometry boundary,c_height_cm,negative,130.1,Rejected,Just above upper bound
+T15,anthropometry sentinel,weight_status + c_weight_kg,positive,"weight_status=2 (not measured), c_weight_kg left blank",Accepted; c_weight_kg stored as missing not 99,"Confirms the sentinel/measurement split from defect D-03 -- no 99 ever reaches the weight column"
+T16,child-module eligibility (lower cut),member_under5=1 age_months,boundary,age_months=9,Section 4 (child module) becomes relevant,Lower edge of the 9-59 month eligibility window
+T17,child-module eligibility (lower cut),member_under5=1 age_months,boundary,age_months=8,Section 4 stays hidden,Just below the eligibility window -- roster row is still valid (a real under-5 child), just not eligible for the child module
+T18,child-module eligibility (upper cut),member_under5=1 age_months,boundary,age_months=59,Section 4 (child module) relevant,Upper edge of the eligibility window
+T19,age_months range,age_months,negative,60,Rejected,"Exceeds the field's own 0-59 range (constraint_register.csv row C012) -- a 60-month-old cannot be coded 'under five'"
+T20,specimen eligibility cut,age_months (within an eligible child),boundary,age_months=12,Section 5 (specimen) becomes relevant,"Required boundary case per Q3 requirement 9 -- exactly the cut point named in paper question 5.01, now computed not asked (defect D-04)"
+T21,specimen eligibility cut,age_months (within an eligible child),boundary,age_months=11,Section 5 (specimen) stays hidden,"Child module still shown (9-59 window), specimen module correctly excluded (below 12 months)"
+T22,fieldwork date window,visit_date,negative,2026-07-01,Rejected,"Required boundary case per Q3 requirement 9: a date outside the fieldwork window. One day past the printed period end -- see defect D-07 for the window's own ambiguity"
+T23,fieldwork date window,visit_date,boundary,2026-06-01,Accepted,Lower bound of the printed fieldwork period
+T24,fieldwork date window,visit_date,negative,2026-05-31,Rejected,One day before the lower bound
+T25,fieldwork date window,visit_date,boundary,2026-06-30,Accepted,Upper bound of the printed fieldwork period
+T26,household size vs roster,hh_size_stated + roster,negative (soft),"hh_size_stated=5, roster completed with 4 members listed","Not blocked -- on-screen note shown, form remains submittable; roster_mismatch_flag=1 in the export","Required case per Q3 requirement 9. Deliberately not a hard constraint -- see constraint_register.csv row C022 and documentation/01_defects_report.md"
+T27,household size vs roster,hh_size_stated + roster,positive,"hh_size_stated=4, roster completed with 4 members listed",No note shown; roster_mismatch_flag=0,Matching case, control for T26
+T28,asset ownership exclusivity,hh_assets,negative,"selected: H (None of these) + C (Mobile telephone)",Rejected,"Defect D-09 -- 'None of these' cannot combine with any other option"
+T29,asset ownership exclusivity,hh_assets,positive,"selected: H (None of these) only",Accepted,Control for T28
+T30,asset ownership exclusivity,hh_assets,positive,"selected: A, C, G (Radio, Mobile telephone, Refrigerator)",Accepted,Multiple non-H selections without H present
+T31,GPS plausibility,gps_dwelling,negative,"longitude 3.5, latitude 6.4 (Lagos-area coordinates, not Bansara)",Rejected,Outside the settlement-register-derived bounding box
+T32,GPS plausibility,gps_dwelling,positive,"longitude 7.63, latitude 10.64 (inside the settlement register's actual extent)",Accepted,Matches a real settlement's coordinates in settlements.csv
+T33,previous-round household ID,prev_round_hh_id,negative,BAN-12345 (5 digits),Rejected,Fails the BAN-000000 format regex
+T34,previous-round household ID,prev_round_hh_id,negative,BAN-999999 (correct format, does not exist in the register),Rejected,"pulldata() lookup against previous_round_households.csv returns empty -- format-valid but non-existent identifiers are still caught"
+T35,previous-round household ID,prev_round_hh_id,positive,BAN-000001 (present in previous_round_households.csv),Accepted,Real household_id from the supplied register
+T36,structure/serial number range,structure_no,boundary,0,Rejected,Below the 1-999 range implied by the paper form's 3-digit box
+T37,structure/serial number range,structure_no,boundary,999,Accepted,Upper bound
+T38,cold chain temperature range,specimen_temp_c,negative,-0.1,Rejected,Below the 0.0-12.0 degC range
+T39,cold chain temperature range,specimen_temp_c,positive,12.0,Accepted,Upper bound
+T40,antibiotic Other write-in,antibiotic_code + antibiotic_other,negative,"antibiotic_code=96 (Other), antibiotic_other left blank",Rejected (required field not answered),Write-in is required whenever Other is selected
+T41,antibiotic Other write-in,antibiotic_code + antibiotic_other,positive,"antibiotic_code=96, antibiotic_other='Local herbal mixture (as reported)'",Accepted,Control for T40
+T42,consent refusal end-to-end,consent_given,negative (terminal),consent_given=2 (refused),"Section 3 onward (roster, child module, specimen, environment) never becomes relevant -- no household/child/specimen data can be entered",Structural consent gate; see documentation/09_data_protection.md
+T43,visit result terminal path,visit_result,negative (terminal),visit_result=4 (dwelling vacant or demolished),"Sections 2 onward never become relevant",Mirrors paper form's own instruction: 2/3/4 at 1.14 means no further section is completed
