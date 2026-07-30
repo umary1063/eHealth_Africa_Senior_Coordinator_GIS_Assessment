@@ -25,3 +25,7 @@ Raw GPS data
 - [Methodology](methodology.md) records the analytical approach and its assumptions.
 - [Technical decisions](technical_decisions.md) records material design choices and their rationale.
 - [Data dictionary](data_dictionary.md) describes the supplied source datasets and derived data assets as they are defined.
+
+## Q1 Outputs
+
+GPS QA outputs are screening indicators that support downstream analysis and operational review. They are not automatic exclusion criteria: flagged observations remain available for documented interpretation in later stages.

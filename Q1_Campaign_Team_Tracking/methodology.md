@@ -36,6 +36,8 @@ Identify and document GPS observations with potential quality concerns without c
 
 The QA layer evaluates calculated and reported speed, positional accuracy, campaign dates and assumed duty hours, sequence gaps, and stationary clusters. The campaign period is 9–13 March 2026. The provisional duty-hours window is 07:00–19:00, selected as an explicit operational assumption for flagging only. Thresholds and limitations are documented in `src/quality/README.md` and must be reviewed before downstream interpretation.
 
+Quality rules are non-exclusive. Each observation is evaluated independently against all configured rules, allowing multiple quality flags to be assigned to the same GPS observation.
+
 ### Validation Approach
 
 GPS points are ordered by team, logger, timestamp, and point identifier. Coordinate-derived speeds are compared with `speed_kmh` where available. Each concern is written as a separate record in `processed.gps_quality_flags`, allowing one point to carry multiple flags. Rule-level counts and percentages are exported for review; no flagged point is silently excluded.
