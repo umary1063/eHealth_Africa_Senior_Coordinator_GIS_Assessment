@@ -57,3 +57,9 @@ Requirement 5 uses `baseline_30m` settlement reconciliation to define a binary m
 Primary weights are binary, row-standardized eight-nearest-neighbour weights calculated in EPSG:32632. Each analysis uses 999 fixed-seed permutations (seed `20260730`) and alpha 0.05. Raw permutation p-values and Benjamini-Hochberg FDR-adjusted p-values are both retained; FDR-adjusted inference defines the primary local labels. A 9,050 m distance-band matrix and an ambiguity-included k=8 population are sensitivity analyses. Results identify spatial concentration of the GPS-derived indicator only and do not establish causation, actual non-visit, misconduct, or vaccination outcomes.
 
 The executed primary Global Moran's I was 0.046612 (expected I -0.000420; z-score 4.821064; permutation p=0.001). Although raw Local Moran screening identified 58 Low-Low visited clusters, 15 Low-High outliers, and one High-Low outlier, none of the 2,382 local tests remained significant after Benjamini-Hochberg FDR correction. Raw local classes are exploratory signals only.
+
+## Decision Products and Evidence Confidence
+
+Requirement 6 distinguishes observed evidence, inference, and operational recommendation. GPS plus e-tally corroboration is high-confidence evidence of a recorded visit; one corroborating source with the other unavailable or ambiguous is moderate confidence; source disagreement, ambiguous attribution, material QA concerns, or unmatched identifiers are low confidence; and insufficient evidence is unknown. These labels describe confidence in the available evidence, not proof of programme performance. Absence of GPS evidence is not evidence of operational failure.
+
+The technical map presents observed evidence classes and does not label raw Local Moran patterns as hotspots. The Incident Manager brief prioritizes rapid verification, device inspection, repeat-visit confirmation, and data reconciliation before mop-up deployment.

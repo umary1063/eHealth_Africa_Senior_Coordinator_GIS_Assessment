@@ -39,3 +39,7 @@ Coverage reconciliation found a substantial 70.34 percentage-point gap between b
 Requirement 5 found positive global autocorrelation in the observed GPS-derived missed indicator under the primary k=8 weights (Global Moran's I 0.046612; permutation p=0.001). No local results remained significant after FDR correction, so raw local patterns are retained for screening rather than presented as confirmed local clusters. See [the spatial-statistics method](docs/missed_settlement_cluster_method.md) for weights, sensitivity analyses, and interpretation limits.
 
 The primary analysis contains 2,382 non-ambiguous settlements (2,168 unvisited and 214 visited). It uses EPSG:32632 binary, row-standardized k=8 nearest-neighbour weights, 999 permutations, seed `20260730`, and Benjamini-Hochberg FDR correction. The 9,050 m distance-band and ambiguity-included scenarios are sensitivity analyses only.
+
+## Requirement 6 Decision Products
+
+The A3 technical map and Incident Manager brief translate observed evidence into cautious operational recommendations. A GPS-unvisited classification means no confirmed GPS visit evidence under the baseline method; it is not proof that a settlement was genuinely missed. Recommendations state evidence confidence and prioritize rapid verification, supervisor follow-up, device inspection, repeat-visit confirmation, and data reconciliation before mop-up deployment or any performance conclusion.

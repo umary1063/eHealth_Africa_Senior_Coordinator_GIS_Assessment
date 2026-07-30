@@ -48,3 +48,11 @@ This dictionary records the confirmed source dataset structure and the descripti
 - **`cluster_summary.csv`:** local class counts by scenario and raw or FDR-adjusted inference.
 - **`weights_diagnostics.csv`:** KNN and distance-band neighbour, island, connectivity, and distance diagnostics.
 - **Executed interpretation:** The primary Global Moran's I is 0.046612 (permutation p=0.001). Raw local classes are retained, while all 2,382 primary local tests are `Not significant` after Benjamini-Hochberg FDR adjustment.
+
+## Decision-Product Evidence Confidence
+
+- **High confidence:** corroborated GPS and e-tally evidence, or a directly measured source metric stated within its own scope.
+- **Moderate confidence:** one source provides evidence while the other is unavailable or ambiguous.
+- **Low confidence:** source disagreement, ambiguous attribution, material QA concerns, or unmatched identifiers.
+- **Unknown:** insufficient evidence for an operational conclusion.
+- **Interpretation rule:** confidence describes evidence sufficiency; it does not convert missing GPS evidence into proof that a settlement was missed.

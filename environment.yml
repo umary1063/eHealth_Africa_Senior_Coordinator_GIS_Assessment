@@ -13,3 +13,6 @@ dependencies:
   - jupyterlab
   - libpysal=4.14.1
   - esda=2.9.0
+  - pip
+  - pip:
+      - reportlab==5.0.0
