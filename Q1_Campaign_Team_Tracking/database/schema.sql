@@ -104,9 +104,14 @@ CREATE TABLE IF NOT EXISTS raw.inaccessible_settlements (
 CREATE TABLE IF NOT EXISTS processed.gps_quality_flags (
     gps_quality_flag_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     gps_track_point_id BIGINT NOT NULL REFERENCES raw.gps_points_raw(gps_track_point_id),
-    rule_name TEXT NOT NULL,
-    flag_type TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    source_file TEXT NOT NULL,
+    team_id TEXT,
+    observed_at TIMESTAMP,
+    quality_rule TEXT NOT NULL,
+    flag_value BOOLEAN NOT NULL,
+    explanation TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT uq_gps_quality_point_rule UNIQUE (gps_track_point_id, quality_rule)
 );
 
 CREATE TABLE IF NOT EXISTS processed.cleaned_gps_points (

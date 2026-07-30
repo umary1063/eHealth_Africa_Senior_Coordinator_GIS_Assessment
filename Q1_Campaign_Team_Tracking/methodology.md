@@ -28,7 +28,17 @@ The first ingestion component is GPS track loading. Implementation details, exec
 
 ## GPS Quality Methodology
 
-_To be completed during implementation._
+### Purpose
+
+Identify and document GPS observations with potential quality concerns without changing or deleting records in `raw.gps_points_raw`.
+
+### Rules and Assumptions
+
+The QA layer evaluates calculated and reported speed, positional accuracy, campaign dates and assumed duty hours, sequence gaps, and stationary clusters. The campaign period is 9–13 March 2026. The provisional duty-hours window is 07:00–19:00, selected as an explicit operational assumption for flagging only. Thresholds and limitations are documented in `src/quality/README.md` and must be reviewed before downstream interpretation.
+
+### Validation Approach
+
+GPS points are ordered by team, logger, timestamp, and point identifier. Coordinate-derived speeds are compared with `speed_kmh` where available. Each concern is written as a separate record in `processed.gps_quality_flags`, allowing one point to carry multiple flags. Rule-level counts and percentages are exported for review; no flagged point is silently excluded.
 
 ## Settlement Attribution Methodology
 
