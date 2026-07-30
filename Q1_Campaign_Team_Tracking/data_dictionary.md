@@ -22,6 +22,7 @@ This dictionary records the confirmed source dataset structure and the descripti
 - **Fields:** `campaign_date`, `team_id`, `settlement_id`, `ward_code`, `lga_name`, `target_population_under5`, `doses_administered`.
 - **Audit findings:** No duplicate `campaign_date` + `team_id` + `settlement_id` combinations were recorded. The audit recorded seven missing values and 201 potentially suspicious dose rows.
 - **Quality considerations:** Missing values and potentially suspicious dose rows require documented review during subsequent processing; they are not treated as deleted records.
+- **Executed reconciliation:** 2,023 supplied rows were retained; seven unmatched IDs were preserved separately. Reported doses remain unchanged, with all-linked and plausible-only totals reported separately.
 
 ## Inaccessible Settlements
 

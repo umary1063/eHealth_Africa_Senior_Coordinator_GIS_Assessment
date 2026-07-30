@@ -48,7 +48,7 @@ Settlement attribution uses deterministic nearest-settlement proximity in PostGI
 
 ## Coverage Reconciliation Methodology
 
-_To be completed during implementation._
+Using `baseline_30m`, reconciliation represented all 2,562 planned settlements. It found 742 strict agreements, 1,640 definitive disagreements, and 180 ambiguous GPS cases. GPS coverage was 8.35% and e-tally coverage was 78.69%; the 70.34 percentage-point gap is operationally substantial. GPS supports physical-presence evidence, while e-tally supports reported delivery and doses; neither alone proves both.
 
 ## Spatial Statistics Methodology
 

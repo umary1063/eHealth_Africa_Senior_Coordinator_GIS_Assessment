@@ -1,0 +1,2 @@
+planned_settlements,gps_visited_settlements,etally_reported_settlements,strict_agreement_count,disagreement_count,ambiguous_gps_cases,definitive_agreement_rate_pct,gps_coverage_pct,etally_coverage_pct,absolute_percentage_point_difference,unmatched_etally_rows,reported_doses_all_linked,reported_doses_plausible_only,linked_dose_over_target_rows,linked_dose_over_target_doses
+2562,214,2016,742,1640,180,31.15,8.35,78.69,70.34,7,170104.0,142553.0,199,27551

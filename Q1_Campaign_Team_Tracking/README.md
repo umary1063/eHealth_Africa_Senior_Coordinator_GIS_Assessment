@@ -33,3 +33,5 @@ GPS QA outputs are screening indicators that support downstream analysis and ope
 Settlement attribution is evaluated under separate baseline and sensitivity scenarios. Proximity evidence supports visit classification but does not itself prove service delivery.
 
 Validated attribution classified 214 settlements as visited under the 30 m baseline. A 60 m sensitivity scenario increased this to 241 while also increasing ambiguous classifications; the urban accuracy-aware scenario classified 216 settlements as visited. The baseline remains the primary operational estimate.
+
+Coverage reconciliation found a substantial 70.34 percentage-point gap between baseline GPS coverage (8.35%) and e-tally-reported coverage (78.69%). The reconciled product is the operational decision source; mismatches require rapid verification before mop-up.

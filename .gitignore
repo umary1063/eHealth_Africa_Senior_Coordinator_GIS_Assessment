@@ -30,6 +30,10 @@ Q1_Campaign_Team_Tracking/outputs/tables/*
 !Q1_Campaign_Team_Tracking/outputs/tables/settlement_attribution_summary.csv
 !Q1_Campaign_Team_Tracking/outputs/tables/settlement_visit_summary.csv
 !Q1_Campaign_Team_Tracking/outputs/tables/attribution_scenario_comparison.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/settlement_coverage_reconciliation.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/ward_coverage_reconciliation.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/reconciliation_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/unmatched_etally_records.csv
 
 # Operating-system files
 .DS_Store
