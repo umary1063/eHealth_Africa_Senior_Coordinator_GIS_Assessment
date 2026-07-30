@@ -17,10 +17,13 @@ venv/
 *.sqlite-shm
 *.duckdb.wal
 
-# Generated outputs
+# Generated outputs (retain the documented Q1 audit summary only)
 Q1_Campaign_Team_Tracking/data/processed/
 Q1_Campaign_Team_Tracking/data/validation/
-Q1_Campaign_Team_Tracking/outputs/
+Q1_Campaign_Team_Tracking/outputs/*
+!Q1_Campaign_Team_Tracking/outputs/tables/
+Q1_Campaign_Team_Tracking/outputs/tables/*
+!Q1_Campaign_Team_Tracking/outputs/tables/data_audit_summary.csv
 
 # Operating-system files
 .DS_Store

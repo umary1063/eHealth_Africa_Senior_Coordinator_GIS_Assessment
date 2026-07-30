@@ -1,0 +1,24 @@
+dataset,metric,value
+GPS tracks,File count,160
+GPS tracks,Team count,32
+GPS tracks,Campaign date count,24
+GPS tracks,Total records,956702
+GPS tracks,Schema variants,1
+GPS tracks,Missing values,19025
+GPS tracks,Invalid timestamps,0
+GPS tracks,Coordinates outside valid ranges,0
+Settlement masterlist,Row count,2562
+Settlement masterlist,Duplicate settlement IDs,0
+Settlement masterlist,Records with missing coordinates,0
+eTally,Row count,2023
+eTally,Duplicate date/team/settlement rows,0
+eTally,Missing values,7
+eTally,Potentially suspicious dose rows,201
+Inaccessible settlements,Row count,75
+Inaccessible settlements,Missing values,0
+Boundary layer: wards,Feature count,40
+Boundary layer: wards,Invalid geometries,0
+Boundary layer: lgas,Feature count,4
+Boundary layer: lgas,Invalid geometries,0
+Boundary layer: state,Feature count,1
+Boundary layer: state,Invalid geometries,0
