@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Geospatial intermediates and local databases
+*.gpkg-wal
+*.gpkg-shm
+*.sqlite-wal
+*.sqlite-shm
+*.duckdb.wal
+
+# Generated outputs
+Q1_Campaign_Team_Tracking/data/processed/
+Q1_Campaign_Team_Tracking/data/validation/
+Q1_Campaign_Team_Tracking/outputs/
+
+# Operating-system files
+.DS_Store
+Thumbs.db

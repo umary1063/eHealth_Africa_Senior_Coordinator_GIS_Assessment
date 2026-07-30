@@ -1,0 +1,4 @@
+name: eha_gis_assessment
+channels:
+  - conda-forge
+dependencies: []
