@@ -88,6 +88,8 @@ Raw GPS observations
 
 Implementation is underway. The work will retain raw observations, document quality rules and assumptions, and distinguish analytical evidence from programme reporting before producing decision-support outputs.
 
+Requirement 5 uses the `baseline_30m` GPS classification for 2,382 non-ambiguous planned settlements (2,168 unvisited and 214 visited). Under binary, row-standardized k=8 nearest-neighbour weights in EPSG:32632, Global Moran's I was 0.046612 (expected I -0.000420; z-score 4.821064; 999-permutation p-value 0.001). This supports positive global autocorrelation in the observed GPS-derived missed-settlement indicator. No Local Moran result survived Benjamini-Hochberg FDR correction; raw local patterns are exploratory screening signals, not confirmed hotspots.
+
 ---
 
 ## Technical Stack

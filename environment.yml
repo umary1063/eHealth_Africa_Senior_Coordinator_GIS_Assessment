@@ -11,3 +11,5 @@ dependencies:
   - pg8000
   - matplotlib
   - jupyterlab
+  - libpysal=4.14.1
+  - esda=2.9.0

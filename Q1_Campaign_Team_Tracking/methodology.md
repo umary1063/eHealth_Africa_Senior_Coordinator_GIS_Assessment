@@ -52,4 +52,8 @@ Using `baseline_30m`, reconciliation represented all 2,562 planned settlements. 
 
 ## Spatial Statistics Methodology
 
-_To be completed during implementation._
+Requirement 5 uses `baseline_30m` settlement reconciliation to define a binary missed indicator: unvisited is 1 and visited is 0. The primary population excludes 180 ambiguous settlements (2,382 analysed settlements). Global Moran's I is the global diagnostic and Local Moran's I is used for local classification.
+
+Primary weights are binary, row-standardized eight-nearest-neighbour weights calculated in EPSG:32632. Each analysis uses 999 fixed-seed permutations (seed `20260730`) and alpha 0.05. Raw permutation p-values and Benjamini-Hochberg FDR-adjusted p-values are both retained; FDR-adjusted inference defines the primary local labels. A 9,050 m distance-band matrix and an ambiguity-included k=8 population are sensitivity analyses. Results identify spatial concentration of the GPS-derived indicator only and do not establish causation, actual non-visit, misconduct, or vaccination outcomes.
+
+The executed primary Global Moran's I was 0.046612 (expected I -0.000420; z-score 4.821064; permutation p=0.001). Although raw Local Moran screening identified 58 Low-Low visited clusters, 15 Low-High outliers, and one High-Low outlier, none of the 2,382 local tests remained significant after Benjamini-Hochberg FDR correction. Raw local classes are exploratory signals only.

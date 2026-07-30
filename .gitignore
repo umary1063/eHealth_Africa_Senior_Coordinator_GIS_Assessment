@@ -34,6 +34,10 @@ Q1_Campaign_Team_Tracking/outputs/tables/*
 !Q1_Campaign_Team_Tracking/outputs/tables/ward_coverage_reconciliation.csv
 !Q1_Campaign_Team_Tracking/outputs/tables/reconciliation_summary.csv
 !Q1_Campaign_Team_Tracking/outputs/tables/unmatched_etally_records.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/global_moran_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/local_moran_results.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/cluster_summary.csv
+!Q1_Campaign_Team_Tracking/outputs/tables/weights_diagnostics.csv
 
 # Operating-system files
 .DS_Store

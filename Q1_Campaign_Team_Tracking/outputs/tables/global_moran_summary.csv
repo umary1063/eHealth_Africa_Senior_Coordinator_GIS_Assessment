@@ -1,0 +1,4 @@
+analysis_scenario,weights_specification,observations,missed_settlements,visited_settlements,permutations,seed,global_moran_i,expected_i,z_score,permutation_p_value
+primary_knn8_excluding_ambiguous,knn_k8_binary_row_standardized,2382,2168,214,999,20260730,0.046612041762941016,-0.00041999160016799666,4.8210643463214495,0.001
+sensitivity_distance_band_excluding_ambiguous,distance_band_9050m_binary_row_standardized,2382,2168,214,999,20260730,0.04019560726316012,-0.00041999160016799666,8.401128665272298,0.001
+sensitivity_knn8_ambiguous_as_missed,knn_k8_binary_row_standardized,2562,2348,214,999,20260730,0.04392632823321496,-0.0003904724716907458,5.004061315894444,0.001

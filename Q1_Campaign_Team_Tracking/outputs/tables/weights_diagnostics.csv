@@ -1,0 +1,7 @@
+weights_specification,observations,minimum_neighbours,median_neighbours,maximum_neighbours,islands,connected_components,median_kth_neighbour_distance_m,maximum_kth_neighbour_distance_m,analysis_scenario
+knn_k4_binary_row_standardized,2382,4,4.0,4,0,2,1767.5807528807468,10014.407576548192,primary_excluding_ambiguous
+knn_k6_binary_row_standardized,2382,6,6.0,6,0,1,2196.9152111969347,10451.842079651567,primary_excluding_ambiguous
+knn_k8_binary_row_standardized,2382,8,8.0,8,0,1,2614.5770816103786,12285.272837126755,primary_excluding_ambiguous
+knn_k10_binary_row_standardized,2382,10,10.0,10,0,1,3011.706713714805,12510.52658986643,primary_excluding_ambiguous
+distance_band_9050m_binary_row_standardized,2382,1,45.0,108,0,1,,,sensitivity_distance_band_excluding_ambiguous
+knn_k8_binary_row_standardized,2562,8,8.0,8,0,1,2479.0861806567673,12285.272837126755,sensitivity_knn8_ambiguous_as_missed
