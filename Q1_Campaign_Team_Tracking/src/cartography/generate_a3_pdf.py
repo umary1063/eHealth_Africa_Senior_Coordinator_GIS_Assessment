@@ -95,7 +95,7 @@ def build_pdf() -> Path:
     for row in inaccessible:
         x, y = xy(row["x"], row["y"]); pdf.line(x-2.5,y-2.5,x+2.5,y+2.5); pdf.line(x-2.5,y+2.5,x+2.5,y-2.5)
     pdf.setFillColor(HexColor("#17365D")); pdf.setFont("Helvetica-Bold", 17); pdf.drawString(42, 800, "Campaign Coverage Reconciliation and GPS-Derived Visit Evidence")
-    pdf.setFillColor(HexColor("#37474F")); pdf.setFont("Helvetica", 9); pdf.drawString(42, 782, "Technical evidence map | baseline_30m visit classification | 9-13 March 2026")
+    pdf.setFillColor(HexColor("#37474F")); pdf.setFont("Helvetica", 9); pdf.drawString(42, 782, "Senior Coordinator, Data and GIS Analytics Technical Assessment | baseline_30m visit classification | 9-13 March 2026")
     pdf.setFillColor(HexColor("#172B4D")); pdf.setFont("Helvetica-Bold", 14); pdf.drawCentredString(774, 714, "N"); pdf.setFont("Helvetica", 18); pdf.drawCentredString(774, 694, "▲")
     # Scale bar: 20 km.
     bar_w = 20000 * scale; sx, sy = map_x + 15, map_y + 15; pdf.setFillColor(black); pdf.rect(sx, sy, bar_w/2, 5, fill=1, stroke=0); pdf.setFillColor(white); pdf.rect(sx+bar_w/2, sy, bar_w/2, 5, fill=1, stroke=1); pdf.setFillColor(black); pdf.setFont("Helvetica", 6); pdf.drawString(sx, sy-8, "0"); pdf.drawCentredString(sx+bar_w/2, sy-8, "10 km"); pdf.drawRightString(sx+bar_w, sy-8, "20 km")
@@ -114,6 +114,7 @@ def build_pdf() -> Path:
     _box(pdf, 558, 65, 590, 105, "Uncertainty and decision use", ["Absence of GPS evidence is not evidence of operational failure. Potential causes include logger non-use or failure, signal loss,", "attribution uncertainty, timing or identifier mismatch, and processing limitations. Prioritize rapid verification before assuming non-performance."])
     pdf.setFillColor(HexColor("#455A64")); pdf.setFont("Helvetica", 6.5); pdf.drawString(42, 42, "Projection: EPSG:32632 (WGS 84 / UTM zone 32N) | Sources: GPS tracks, settlement masterlist, e-tally, inaccessible-settlement list, administrative boundaries.")
     pdf.drawString(42, 31, "Method: baseline_30m attribution; 30 m tolerance; 3-point, 15-minute continuous visit-episode rule. Absence of GPS evidence is not evidence of operational failure.")
+    pdf.drawString(42, 20, "Cartographer: Yahaya Umar Muhammad | Date: 30 July 2026")
     pdf.save(); return output
 
 

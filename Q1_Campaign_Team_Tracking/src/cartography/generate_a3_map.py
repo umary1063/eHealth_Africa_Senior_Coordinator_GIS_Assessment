@@ -107,7 +107,7 @@ def build_map() -> tuple[Path, Path]:
     page = layout.pageCollection().page(0); page.setPageSize("A3", QgsLayoutItemPage.Orientation.Landscape)
     project.layoutManager().addLayout(layout)
     _label(layout, "Campaign Coverage Reconciliation and GPS-Derived Visit Evidence", 10, 7, 280, 10, 15, True)
-    _label(layout, "Technical evidence map | baseline_30m visit classification | 9-13 March 2026", 10, 18, 280, 6, 8)
+    _label(layout, "Senior Coordinator, Data and GIS Analytics Technical Assessment | baseline_30m visit classification | 9-13 March 2026", 10, 18, 390, 6, 7)
     map_item = QgsLayoutItemMap(layout); map_item.setFrameEnabled(True)
     map_item.setLayers([lgas, wards, settlements, inaccessible]); map_item.setCrs(QgsCoordinateReferenceSystem("EPSG:32632"))
     extent = lgas.extent(); extent.scale(1.05); map_item.setExtent(extent)
@@ -121,7 +121,7 @@ def build_map() -> tuple[Path, Path]:
     _box(layout, "Global spatial statistic", "Primary k=8 Global Moran's I = 0.046612\nExpected I = -0.000420 | z = 4.821064\n999 permutations | p = 0.001", 10, 224, 98, 37)
     _box(layout, "Local Moran interpretation", "Exploratory screening patterns are not statistically significant after FDR correction. No confirmed local hotspots are shown or inferred.", 112, 224, 98, 37)
     _box(layout, "Uncertainty and decision use", "Absence of GPS evidence is not evidence of operational failure. It may reflect logger non-use or failure, signal loss, attribution uncertainty, timing or identifier mismatch, or processing limitations. Prioritize rapid verification before assuming non-performance.", 214, 224, 196, 37)
-    _label(layout, "Projection: EPSG:32632 (WGS 84 / UTM zone 32N) | Sources: GPS tracks, settlement masterlist, e-tally, inaccessible-settlement list, and administrative boundaries.\nMethod: baseline_30m settlement attribution; symbols show observed evidence, not proof of service delivery or non-performance.", 10, 266, 400, 10, 6.5)
+    _label(layout, "Projection: EPSG:32632 (WGS 84 / UTM zone 32N) | Sources: GPS tracks, settlement masterlist, e-tally, inaccessible-settlement list, and administrative boundaries.\nMethod: baseline_30m settlement attribution; symbols show observed evidence, not proof of service delivery or non-performance.\nCartographer: Yahaya Umar Muhammad | Date: 30 July 2026", 10, 266, 400, 13, 6.5)
 
     if not project.write(str(qgz_path)): raise RuntimeError("Unable to save QGIS project.")
     # QGIS's Windows PDF exporter is unstable in this installation. The same
