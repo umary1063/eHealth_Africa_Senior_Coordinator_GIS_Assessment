@@ -2,129 +2,213 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root{
-    --ink:#16201A; --paper:#EEF0EA; --paper-raised:#E3E6DC; --paper-line:#C9CEC0;
-    --rust:#A93526; --teal:#1F6F63; --amber:#8C6A1A; --mid:#5C6459;
+    --paper:#F6F7FB; --paper-raised:#ECEEF6; --paper-line:#D9DCE8;
+    --ink:#14171C; --mid:#5B6072;
+    --teal:#0B9B77; --coral:#F0473A; --amber:#D9900E; --indigo:#4453D6; --violet:#8D3FD1;
+    --teal-soft:#0EA37E1a; --coral-soft:#F0473A1a; --amber-soft:#D9900E1a; --indigo-soft:#4453D61a; --violet-soft:#8D3FD11a;
     --serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
     --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     --mono: ui-monospace, 'Cascadia Code', 'SF Mono', 'JetBrains Mono', Consolas, monospace;
   }
   @media (prefers-color-scheme: dark){
-    :root{ --ink:#ECEBDF; --paper:#11140E; --paper-raised:#191D13; --paper-line:#333828; --rust:#E2604F; --teal:#4FB3A0; --amber:#D9B44A; --mid:#8B9284; }
+    :root{
+      --paper:#0D0F16; --paper-raised:#161A26; --paper-line:#2A2F42;
+      --ink:#EEEFF6; --mid:#9296AC;
+      --teal:#2FD9A8; --coral:#FF6E62; --amber:#F4B93D; --indigo:#8B98FF; --violet:#C98BF5;
+      --teal-soft:#2FD9A82a; --coral-soft:#FF6E622a; --amber-soft:#F4B93D2a; --indigo-soft:#8B98FF2a; --violet-soft:#C98BF52a;
+    }
   }
-  :root[data-theme="dark"]{ --ink:#ECEBDF; --paper:#11140E; --paper-raised:#191D13; --paper-line:#333828; --rust:#E2604F; --teal:#4FB3A0; --amber:#D9B44A; --mid:#8B9284; }
-  :root[data-theme="light"]{ --ink:#16201A; --paper:#EEF0EA; --paper-raised:#E3E6DC; --paper-line:#C9CEC0; --rust:#A93526; --teal:#1F6F63; --amber:#8C6A1A; --mid:#5C6459; }
+  :root[data-theme="dark"]{
+    --paper:#0D0F16; --paper-raised:#161A26; --paper-line:#2A2F42;
+    --ink:#EEEFF6; --mid:#9296AC;
+    --teal:#2FD9A8; --coral:#FF6E62; --amber:#F4B93D; --indigo:#8B98FF; --violet:#C98BF5;
+    --teal-soft:#2FD9A82a; --coral-soft:#FF6E622a; --amber-soft:#F4B93D2a; --indigo-soft:#8B98FF2a; --violet-soft:#C98BF52a;
+  }
+  :root[data-theme="light"]{
+    --paper:#F6F7FB; --paper-raised:#ECEEF6; --paper-line:#D9DCE8;
+    --ink:#14171C; --mid:#5B6072;
+    --teal:#0B9B77; --coral:#F0473A; --amber:#D9900E; --indigo:#4453D6; --violet:#8D3FD1;
+    --teal-soft:#0EA37E1a; --coral-soft:#F0473A1a; --amber-soft:#D9900E1a; --indigo-soft:#4453D61a; --violet-soft:#8D3FD11a;
+  }
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--paper); color:var(--ink); font-family:var(--sans);
     font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
   }
   a{color:inherit;}
-  ::selection{ background:var(--teal); color:var(--paper); }
+  ::selection{ background:var(--teal); color:#fff; }
+  :focus-visible{ outline:2px solid var(--indigo); outline-offset:3px; }
 
   .wrap{max-width:920px; margin:0 auto; padding:0 28px;}
+  .page{ padding-left:0; transition:padding-left .2s ease; }
+  @media(min-width:1180px){ .page{ padding-left:92px; } }
 
-  header.masthead{
-    border-bottom:1px solid var(--paper-line);
-    padding:22px 0;
+  /* ---- colour-tab side rail ---- */
+  .rail{
+    position:fixed; top:0; left:0; bottom:0; width:92px; display:none;
+    flex-direction:column; justify-content:center; gap:2px; z-index:20;
+    border-right:1px solid var(--paper-line); background:var(--paper-raised);
   }
+  @media(min-width:1180px){ .rail{ display:flex; } }
+  .rail a{
+    display:flex; flex-direction:column; align-items:center; gap:7px; text-decoration:none;
+    padding:13px 4px; color:var(--mid); border-left:3px solid transparent;
+  }
+  .rail a .dot{ width:9px; height:9px; border-radius:50%; background:currentColor; opacity:.55; transition:opacity .15s ease, transform .15s ease; }
+  .rail a span.lbl{ font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase; writing-mode:vertical-rl; text-orientation:mixed; }
+  .rail a:hover .dot, .rail a.active .dot{ opacity:1; transform:scale(1.3); }
+  .rail a.active{ color:var(--ink); border-left-color:currentColor; }
+  .rail a[data-hue="teal"]{ color:var(--teal); }
+  .rail a[data-hue="indigo"]{ color:var(--indigo); }
+  .rail a[data-hue="coral"]{ color:var(--coral); }
+  .rail a[data-hue="amber"]{ color:var(--amber); }
+  .rail a[data-hue="violet"]{ color:var(--violet); }
+  .rail a.active[data-hue="teal"], .rail a.active[data-hue="indigo"], .rail a.active[data-hue="coral"],
+  .rail a.active[data-hue="amber"], .rail a.active[data-hue="violet"]{ color:var(--ink); }
+
+  /* ---- mobile top chip nav ---- */
+  .chipnav{ display:flex; gap:8px; overflow-x:auto; padding:12px 28px; border-bottom:1px solid var(--paper-line); }
+  @media(min-width:1180px){ .chipnav{ display:none; } }
+  .chipnav a{
+    flex:none; font-family:var(--mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    padding:7px 12px; border-radius:100px; text-decoration:none; white-space:nowrap; border:1px solid var(--paper-line);
+    color:var(--mid);
+  }
+  .chipnav a[data-hue="teal"]{ border-color:var(--teal); color:var(--teal); }
+  .chipnav a[data-hue="indigo"]{ border-color:var(--indigo); color:var(--indigo); }
+  .chipnav a[data-hue="coral"]{ border-color:var(--coral); color:var(--coral); }
+  .chipnav a[data-hue="amber"]{ border-color:var(--amber); color:var(--amber); }
+  .chipnav a[data-hue="violet"]{ border-color:var(--violet); color:var(--violet); }
+
+  header.masthead{ border-bottom:1px solid var(--paper-line); padding:22px 0; }
   .masthead-row{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap;}
   .masthead-row .tag{font-family:var(--mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--mid);}
   .masthead-row .form-id{font-family:var(--mono); font-size:12px; letter-spacing:.04em; color:var(--mid);}
 
-  /* ---- hero: the specimen label rendered as coding boxes ---- */
-  .hero{padding:64px 0 46px; border-bottom:1px solid var(--paper-line);}
+  /* ---- hero ---- */
+  .hero{ position:relative; padding:64px 0 46px; border-bottom:1px solid var(--paper-line); overflow:hidden; }
+  #scatter{ position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:.9; }
+  .hero .wrap{ position:relative; z-index:1; }
   .eyebrow{
     font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase;
-    color:var(--teal); margin:0 0 18px;
+    color:var(--indigo); margin:0 0 18px; display:inline-block; padding:4px 10px 4px 0;
   }
   h1{
     font-family:var(--serif); font-weight:400; font-size:clamp(34px,5vw,54px);
-    line-height:1.08; margin:0 0 20px; text-wrap:balance; max-width:14ch;
+    line-height:1.08; margin:0 0 20px; text-wrap:balance; max-width:15ch;
   }
+  h1 em{ font-style:normal; color:var(--coral); }
   .hero p.lede{ font-size:19px; color:var(--ink); max-width:56ch; margin:0 0 30px; }
   .hero p.lede b{font-weight:600;}
 
   .boxes{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 34px; align-items:center; }
   .boxes .cell{
-    font-family:var(--mono); font-size:22px; font-variant-numeric:tabular-nums;
+    font-family:var(--mono); font-size:22px; font-weight:600; font-variant-numeric:tabular-nums;
     width:38px; height:46px; display:flex; align-items:center; justify-content:center;
-    border:1.5px solid var(--ink); border-radius:2px; background:var(--paper-raised);
+    border-radius:6px; color:#fff;
   }
-  .boxes .cell.check{ border-color:var(--rust); color:var(--rust); font-weight:700; }
+  .boxes .cell.check{
+    border-radius:6px; color:#fff; background:var(--coral); font-weight:700;
+    box-shadow:0 0 0 3px var(--coral-soft);
+  }
   .boxes .dash{font-family:var(--mono); font-size:22px; color:var(--mid); padding:0 2px;}
   .boxes .caption{font-family:var(--mono); font-size:11.5px; color:var(--mid); margin-left:10px; letter-spacing:.02em;}
 
-  .status-strip{ display:flex; gap:28px; flex-wrap:wrap; }
-  .status-strip .item{ font-family:var(--mono); font-size:12.5px; color:var(--mid); }
+  .status-strip{ display:flex; gap:12px; flex-wrap:wrap; }
+  .status-strip .item{
+    font-family:var(--mono); font-size:12.5px; color:var(--ink); padding:8px 14px;
+    border-radius:9px; background:var(--paper-raised); border:1px solid var(--paper-line);
+  }
   .status-strip .item b{ color:var(--teal); font-weight:600; }
+  .status-strip .item.pending{ border-color:var(--amber); background:var(--amber-soft); }
   .status-strip .item.pending b{ color:var(--amber); }
 
-  section{padding:52px 0; border-bottom:1px solid var(--paper-line);}
+  section{padding:56px 0; border-bottom:1px solid var(--paper-line); scroll-margin-top:24px;}
   section:last-of-type{border-bottom:none;}
-  h2{
-    font-family:var(--serif); font-weight:400; font-size:26px; margin:0 0 8px;
-  }
+  h2{ font-family:var(--serif); font-weight:400; font-size:28px; margin:0 0 8px; }
   .section-note{ color:var(--mid); font-size:14.5px; max-width:60ch; margin:0 0 32px; }
+  .section-eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase;
+    margin:0 0 10px; font-weight:600;
+  }
+  section[data-hue="teal"] .section-eyebrow{ color:var(--teal); }
+  section[data-hue="indigo"] .section-eyebrow{ color:var(--indigo); }
+  section[data-hue="coral"] .section-eyebrow{ color:var(--coral); }
+  section[data-hue="amber"] .section-eyebrow{ color:var(--amber); }
+  section[data-hue="violet"] .section-eyebrow{ color:var(--violet); }
 
   /* ---- structural-decision diagram ---- */
-  .decision{
-    display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--paper-line);
-    font-family:var(--mono); font-size:13px;
-  }
-  .decision > div{padding:20px 22px;}
-  .decision .before{border-bottom:1px solid var(--paper-line); }
-  .decision .after{border-top:none;}
-  @media(min-width:640px){
-    .decision .before{border-bottom:none; border-right:1px solid var(--paper-line);}
-  }
-  .decision .label{ text-transform:uppercase; letter-spacing:.08em; font-size:11px; color:var(--mid); margin-bottom:12px;}
-  .decision .before .label{color:var(--rust);}
+  .decision{ display:grid; grid-template-columns:1fr 1fr; gap:14px; font-family:var(--mono); font-size:13px; }
+  .decision > div{ padding:22px 22px; border-radius:12px; }
+  .decision .before{ background:var(--coral-soft); border:1px solid var(--coral); }
+  .decision .after{ background:var(--teal-soft); border:1px solid var(--teal); }
+  @media(max-width:639px){ .decision{ grid-template-columns:1fr; } }
+  .decision .label{ text-transform:uppercase; letter-spacing:.08em; font-size:11px; margin-bottom:12px; font-weight:700;}
+  .decision .before .label{color:var(--coral);}
   .decision .after .label{color:var(--teal);}
   .decision ul{margin:0; padding-left:18px;}
-  .decision li{margin-bottom:6px;}
+  .decision li{margin-bottom:8px;}
+  .decision li::marker{ color:var(--mid); }
 
   /* ---- defect ledger ---- */
-  .defect-list{display:flex; flex-direction:column; border-top:1px solid var(--paper-line);}
+  .defect-list{ display:grid; grid-template-columns:1fr; gap:12px; }
+  @media(min-width:760px){ .defect-list{ grid-template-columns:1fr 1fr; } }
   .defect{
-    display:grid; grid-template-columns:52px 1fr auto; gap:16px; align-items:start;
-    padding:16px 0; border-bottom:1px solid var(--paper-line);
+    display:grid; grid-template-columns:44px 1fr; gap:14px; align-items:start;
+    padding:16px 16px 16px 0; border-radius:10px; border:1px solid var(--paper-line);
+    background:var(--paper-raised);
   }
-  .defect .num{ font-family:var(--mono); font-size:13px; color:var(--mid); padding-top:2px; }
-  .defect .body h3{ font-family:var(--sans); font-size:15.5px; font-weight:600; margin:0 0 4px; }
-  .defect .body p{ margin:0; font-size:14px; color:var(--mid); max-width:62ch; }
+  .defect .num{
+    font-family:var(--mono); font-size:12.5px; color:#fff; padding-top:2px;
+    background:var(--indigo); border-radius:8px 0 0 8px; align-self:stretch;
+    display:flex; align-items:flex-start; justify-content:center; padding-top:14px;
+  }
+  .defect.escalated .num{ background:var(--coral); }
+  .defect.both .num{ background:var(--amber); }
+  .defect .body h3{ font-family:var(--sans); font-size:15px; font-weight:700; margin:0 0 5px; }
+  .defect .body p{ margin:0 0 10px; font-size:13.5px; color:var(--mid); }
   .pill{
-    font-family:var(--mono); font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
-    padding:4px 9px; border-radius:100px; white-space:nowrap; height:fit-content; border:1px solid transparent;
+    font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    padding:4px 10px; border-radius:100px; white-space:nowrap; display:inline-block; font-weight:700; color:#fff;
   }
-  .pill.resolved{ color:var(--teal); border-color:var(--teal); }
-  .pill.escalated{ color:var(--rust); border-color:var(--rust); }
-  .pill.both{ background:var(--paper-raised); color:var(--ink); border-color:var(--paper-line); }
+  .pill.resolved{ background:var(--teal); }
+  .pill.escalated{ background:var(--coral); }
+  .pill.both{ background:var(--amber); }
 
   /* ---- numbers strip ---- */
-  .numbers{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:0; border:1px solid var(--paper-line); }
-  .numbers .num-cell{ padding:22px 20px; border-right:1px solid var(--paper-line); border-bottom:1px solid var(--paper-line); }
-  .numbers .num-cell:nth-last-child(-n+3){border-bottom:none;}
-  .numbers .num-cell:last-child{border-right:none;}
-  .numbers .figure{ font-family:var(--mono); font-size:30px; font-variant-numeric:tabular-nums; line-height:1; margin-bottom:8px; }
+  .numbers{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .numbers .num-cell{
+    padding:22px 20px; border-radius:12px; border:1px solid var(--paper-line);
+    border-top:4px solid var(--hue, var(--teal)); background:var(--paper-raised);
+  }
+  .numbers .figure{ font-family:var(--mono); font-size:30px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin-bottom:8px; color:var(--hue, var(--teal)); }
   .numbers .caption{ font-size:12.5px; color:var(--mid); }
 
   /* ---- index / deliverables ---- */
-  .index-list{ border-top:1px solid var(--paper-line); }
+  .index-list{ display:flex; flex-direction:column; gap:8px; }
   .index-row{
-    display:flex; justify-content:space-between; gap:20px; align-items:baseline;
-    padding:13px 0; border-bottom:1px solid var(--paper-line); text-decoration:none;
+    display:flex; justify-content:space-between; gap:20px; align-items:center;
+    padding:12px 16px; border-radius:10px; border:1px solid var(--paper-line); text-decoration:none;
+    background:var(--paper-raised); transition:border-color .15s ease, transform .15s ease;
   }
-  .index-row:hover .index-title{ color:var(--teal); }
-  .index-row .index-no{ font-family:var(--mono); font-size:12px; color:var(--mid); width:28px; flex:none; }
+  .index-row:hover{ border-color:var(--hue, var(--indigo)); transform:translateX(3px); }
+  .index-row:hover .index-title{ color:var(--hue, var(--indigo)); }
+  .index-row .index-no{
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:#fff; width:26px; height:26px; flex:none;
+    border-radius:50%; background:var(--hue, var(--indigo)); display:flex; align-items:center; justify-content:center;
+  }
   .index-title{ font-size:15px; flex:1; transition:color .15s ease; }
-  .index-file{ font-family:var(--mono); font-size:12px; color:var(--mid); text-align:right; }
+  .index-file{ font-family:var(--mono); font-size:11.5px; color:var(--mid); text-align:right; }
 
-  footer{ padding:40px 0 60px; }
+  footer{ padding:44px 0 60px; }
+  .swatches{ display:flex; gap:6px; margin-bottom:22px; }
+  .swatches span{ width:26px; height:8px; border-radius:4px; display:block; }
   footer .cols{ display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; font-size:13px; color:var(--mid); }
   footer .cols a{ text-decoration:underline; text-decoration-color:var(--paper-line); text-underline-offset:3px; }
-  footer .cols a:hover{ text-decoration-color:var(--teal); }
+  footer .cols a:hover{ text-decoration-color:var(--indigo); }
   footer .stamp{ font-family:var(--mono); font-size:11px; color:var(--mid); margin-top:26px; padding-top:18px; border-top:1px solid var(--paper-line); }
 
   @media (prefers-reduced-motion:no-preference){
@@ -133,6 +217,23 @@
   @keyframes rise{ to{ opacity:1; transform:none; } }
 </style>
 
+<nav class="rail" aria-label="Section navigation">
+  <a href="#hero" data-hue="indigo"><span class="dot"></span><span class="lbl">Brief</span></a>
+  <a href="#decision" data-hue="indigo"><span class="dot"></span><span class="lbl">Decision</span></a>
+  <a href="#defects" data-hue="coral"><span class="dot"></span><span class="lbl">Defects</span></a>
+  <a href="#numbers" data-hue="teal"><span class="dot"></span><span class="lbl">Numbers</span></a>
+  <a href="#index" data-hue="violet"><span class="dot"></span><span class="lbl">Index</span></a>
+</nav>
+
+<div class="page">
+<div class="chipnav">
+  <a href="#hero" data-hue="indigo">Brief</a>
+  <a href="#decision" data-hue="indigo">Decision</a>
+  <a href="#defects" data-hue="coral">Defects</a>
+  <a href="#numbers" data-hue="teal">Numbers</a>
+  <a href="#index" data-hue="violet">Index</a>
+</div>
+
 <header class="masthead">
   <div class="wrap masthead-row">
     <span class="tag">eHealth Africa · Technical Assessment · Part 2, Question 3</span>
@@ -140,10 +241,11 @@
   </div>
 </header>
 
-<section class="hero">
+<section class="hero" id="hero">
+  <canvas id="scatter" aria-hidden="true"></canvas>
   <div class="wrap">
     <p class="eyebrow">Paper questionnaire → deployable ODK form</p>
-    <h1>A household roster doesn't know it's contradicting itself until you try to code it.</h1>
+    <h1>A household roster doesn't know it's <em>contradicting itself</em> until you try to code it.</h1>
     <p class="lede">
       <b>Household_Questionnaire_HH2026v1.docx</b> — an integrated child health and antimicrobial
       resistance survey for Bansara State — converted to an XLSForm against real field constraints:
@@ -152,9 +254,15 @@
     </p>
 
     <div class="boxes" aria-hidden="true">
-      <span class="cell">B</span><span class="cell">S</span><span class="cell">N</span>
-      <span class="cell">4</span><span class="cell">8</span><span class="cell">0</span>
-      <span class="cell">0</span><span class="cell">1</span><span class="cell">2</span>
+      <span class="cell" style="background:var(--indigo)">B</span>
+      <span class="cell" style="background:var(--indigo)">S</span>
+      <span class="cell" style="background:var(--indigo)">N</span>
+      <span class="cell" style="background:var(--violet)">4</span>
+      <span class="cell" style="background:var(--violet)">8</span>
+      <span class="cell" style="background:var(--violet)">0</span>
+      <span class="cell" style="background:var(--teal)">0</span>
+      <span class="cell" style="background:var(--teal)">1</span>
+      <span class="cell" style="background:var(--teal)">2</span>
       <span class="dash">–</span>
       <span class="cell check">6</span>
       <span class="caption">specimen label 5.03 — modulus 11, weights 2–7, check digit verified live</span>
@@ -169,9 +277,10 @@
   </div>
 </section>
 
-<section>
+<section id="decision" data-hue="indigo">
   <div class="wrap">
-    <h2>The one decision that does most of the work</h2>
+    <p class="section-eyebrow">The structural decision</p>
+    <h2>The one choice that does most of the work</h2>
     <p class="section-note">
       The paper form asks the enumerator to photocopy Section 4, hand-count eligible children at
       3.02 from an "office use" column, and re-key each child's line number. The digital form
@@ -200,62 +309,70 @@
   </div>
 </section>
 
-<section>
+<section id="defects" data-hue="coral">
   <div class="wrap">
-    <h2>Nine defects, read critically</h2>
+    <p class="section-eyebrow">Read critically, not transcribed cleanly</p>
+    <h2>Nine defects</h2>
     <p class="section-note">
       Every defect below was either fixed in the running form or escalated to the ministry —
-      never both, always disclosed. Full reasoning in
+      never silently both, always disclosed. Full reasoning in
       <a href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/01_defects_report.md">01_defects_report.md</a>.
     </p>
     <div class="defect-list">
-      <div class="defect reveal"><span class="num">D-01</span><div class="body"><h3>3.02 needs "office use" data live in the field</h3><p>Column (7) is labelled for office completion, yet the paper routes a live skip decision on it.</p></div><span class="pill resolved">resolved</span></div>
-      <div class="defect reveal"><span class="num">D-02</span><div class="body"><h3>No rule for a borderline five-year-old</h3><p>Which age column to fill is left to judgement, with no probe procedure given.</p></div><span class="pill both">resolved + escalated</span></div>
-      <div class="defect reveal"><span class="num">D-03</span><div class="body"><h3>"99 = not measured" inside a continuous field</h3><p>4.05/4.06 hide a non-response sentinel inside a plausible-looking decimal weight/height.</p></div><span class="pill resolved">resolved</span></div>
-      <div class="defect reveal"><span class="num">D-04</span><div class="body"><h3>5.01 restates data already on the form</h3><p>Age-eligibility for specimen collection is asked again, two questions after it was captured.</p></div><span class="pill resolved">resolved</span></div>
-      <div class="defect reveal"><span class="num">D-05</span><div class="body"><h3>The medicine list referenced at 4.13 was never supplied</h3><p>No such file exists anywhere in the data pack.</p></div><span class="pill escalated">escalated</span></div>
-      <div class="defect reveal"><span class="num">D-06</span><div class="body"><h3>No interview start time, anywhere</h3><p>Only an end time (7.01) — duration, the exact fraud signal in the brief, can't be computed.</p></div><span class="pill resolved">resolved</span></div>
-      <div class="defect reveal"><span class="num">D-07</span><div class="body"><h3>Fieldwork window disagrees with itself</h3><p>Form header says 1–30 June; the operating brief says 14 days. Neither document resolves it.</p></div><span class="pill escalated">escalated</span></div>
-      <div class="defect reveal"><span class="num">D-08</span><div class="body"><h3>5.02 has no skip instruction at all</h3><p>Neither branch — specimen obtained or not — says what to do next.</p></div><span class="pill both">resolved + escalated</span></div>
-      <div class="defect reveal"><span class="num">D-09</span><div class="body"><h3>"None of these" isn't exclusive of anything</h3><p>6.07 permits a response that no asset-index construction can sensibly interpret.</p></div><span class="pill resolved">resolved</span></div>
+      <div class="defect reveal"><span class="num">D-01</span><div class="body"><h3>3.02 needs "office use" data live in the field</h3><p>Column (7) is labelled for office completion, yet the paper routes a live skip decision on it.</p><span class="pill resolved">resolved</span></div></div>
+      <div class="defect both reveal"><span class="num">D-02</span><div class="body"><h3>No rule for a borderline five-year-old</h3><p>Which age column to fill is left to judgement, with no probe procedure given.</p><span class="pill both">resolved + escalated</span></div></div>
+      <div class="defect reveal"><span class="num">D-03</span><div class="body"><h3>"99 = not measured" inside a continuous field</h3><p>4.05/4.06 hide a non-response sentinel inside a plausible-looking decimal weight/height.</p><span class="pill resolved">resolved</span></div></div>
+      <div class="defect reveal"><span class="num">D-04</span><div class="body"><h3>5.01 restates data already on the form</h3><p>Age-eligibility for specimen collection is asked again, two questions after it was captured.</p><span class="pill resolved">resolved</span></div></div>
+      <div class="defect escalated reveal"><span class="num">D-05</span><div class="body"><h3>The medicine list referenced at 4.13 was never supplied</h3><p>No such file exists anywhere in the data pack.</p><span class="pill escalated">escalated</span></div></div>
+      <div class="defect reveal"><span class="num">D-06</span><div class="body"><h3>No interview start time, anywhere</h3><p>Only an end time (7.01) — duration, the exact fraud signal in the brief, can't be computed.</p><span class="pill resolved">resolved</span></div></div>
+      <div class="defect escalated reveal"><span class="num">D-07</span><div class="body"><h3>Fieldwork window disagrees with itself</h3><p>Form header says 1–30 June; the operating brief says 14 days. Neither document resolves it.</p><span class="pill escalated">escalated</span></div></div>
+      <div class="defect both reveal"><span class="num">D-08</span><div class="body"><h3>5.02 has no skip instruction at all</h3><p>Neither branch — specimen obtained or not — says what to do next.</p><span class="pill both">resolved + escalated</span></div></div>
+      <div class="defect reveal"><span class="num">D-09</span><div class="body"><h3>"None of these" isn't exclusive of anything</h3><p>6.07 permits a response no asset-index construction can sensibly interpret.</p><span class="pill resolved">resolved</span></div></div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="numbers" data-hue="teal">
   <div class="wrap">
+    <p class="section-eyebrow">The build, in figures</p>
     <h2>By the numbers</h2>
     <div class="numbers">
-      <div class="num-cell"><div class="figure">2,524</div><div class="caption">settlements served via cascading external CSV, not an inline choice list</div></div>
-      <div class="num-cell"><div class="figure">24 / 120</div><div class="caption">teams / field staff, each with a contiguous 900-label specimen block</div></div>
-      <div class="num-cell"><div class="figure">25</div><div class="caption">constraint-register rows, generated from the same script that builds the form</div></div>
-      <div class="num-cell"><div class="figure">43</div><div class="caption">test-plan cases, including boundaries and negatives</div></div>
-      <div class="num-cell"><div class="figure">mod 11</div><div class="caption">check-digit scheme, proven — not just tested — to catch every adjacent transposition</div></div>
-      <div class="num-cell"><div class="figure">2</div><div class="caption">languages wired end to end: Hausa in the field, English for review</div></div>
+      <div class="num-cell" style="--hue:var(--indigo)"><div class="figure">2,524</div><div class="caption">settlements served via cascading external CSV, not an inline choice list</div></div>
+      <div class="num-cell" style="--hue:var(--violet)"><div class="figure">24 / 120</div><div class="caption">teams / field staff, each with a contiguous 900-label specimen block</div></div>
+      <div class="num-cell" style="--hue:var(--teal)"><div class="figure">25</div><div class="caption">constraint-register rows, generated from the same script that builds the form</div></div>
+      <div class="num-cell" style="--hue:var(--coral)"><div class="figure">43</div><div class="caption">test-plan cases, including boundaries and negatives</div></div>
+      <div class="num-cell" style="--hue:var(--amber)"><div class="figure">mod 11</div><div class="caption">check-digit scheme, proven — not just tested — to catch every adjacent transposition</div></div>
+      <div class="num-cell" style="--hue:var(--indigo)"><div class="figure">2</div><div class="caption">languages wired end to end: Hausa in the field, English for review</div></div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="index" data-hue="violet">
   <div class="wrap">
+    <p class="section-eyebrow">Nothing here without an artefact behind it</p>
     <h2>The form, the register, the case for each</h2>
-    <p class="section-note">Every file below is committed in the repository — nothing here is a claim without an artifact behind it.</p>
+    <p class="section-note">Every file below is committed in the repository.</p>
     <div class="index-list">
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/form/HH2026_v1.xlsx"><span class="index-no">01</span><span class="index-title">The XLSForm itself</span><span class="index-file">form/HH2026_v1.xlsx</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/conversion/conversion_log.txt"><span class="index-no">02</span><span class="index-title">pyxform + ODK Validate conversion log</span><span class="index-file">conversion/conversion_log.txt</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/constraint_register.csv"><span class="index-no">03</span><span class="index-title">Constraint register — every rule, its source, what it prevents</span><span class="index-file">constraint_register.csv</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/01_defects_report.md"><span class="index-no">04</span><span class="index-title">Defects report — D-01 through D-09</span><span class="index-file">documentation/01_…</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/04_specimen_label_validation.md"><span class="index-no">05</span><span class="index-title">Specimen label check digit — proof and worked vectors</span><span class="index-file">documentation/04_…</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/05_duplicate_label_detection.md"><span class="index-no">06</span><span class="index-title">What a self-contained form can't enforce, and what can</span><span class="index-file">documentation/05_…</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/test_plan.csv"><span class="index-no">07</span><span class="index-title">Test plan — 43 cases with expected results</span><span class="index-file">test_plan.csv</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/10_codebook.md"><span class="index-no">08</span><span class="index-title">Codebook — fields to analysis variables, table structure</span><span class="index-file">documentation/10_…</span></a>
-      <a class="index-row" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/11_scope_and_omissions.md"><span class="index-no">09</span><span class="index-title">What was deliberately left out, and why</span><span class="index-file">documentation/11_…</span></a>
+      <a class="index-row" style="--hue:var(--indigo)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/form/HH2026_v1.xlsx"><span class="index-no">01</span><span class="index-title">The XLSForm itself</span><span class="index-file">form/HH2026_v1.xlsx</span></a>
+      <a class="index-row" style="--hue:var(--indigo)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/conversion/conversion_log.txt"><span class="index-no">02</span><span class="index-title">pyxform + ODK Validate conversion log</span><span class="index-file">conversion/conversion_log.txt</span></a>
+      <a class="index-row" style="--hue:var(--teal)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/constraint_register.csv"><span class="index-no">03</span><span class="index-title">Constraint register — every rule, its source, what it prevents</span><span class="index-file">constraint_register.csv</span></a>
+      <a class="index-row" style="--hue:var(--coral)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/01_defects_report.md"><span class="index-no">04</span><span class="index-title">Defects report — D-01 through D-09</span><span class="index-file">documentation/01_…</span></a>
+      <a class="index-row" style="--hue:var(--violet)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/04_specimen_label_validation.md"><span class="index-no">05</span><span class="index-title">Specimen label check digit — proof and worked vectors</span><span class="index-file">documentation/04_…</span></a>
+      <a class="index-row" style="--hue:var(--violet)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/05_duplicate_label_detection.md"><span class="index-no">06</span><span class="index-title">What a self-contained form can't enforce, and what can</span><span class="index-file">documentation/05_…</span></a>
+      <a class="index-row" style="--hue:var(--amber)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/test_plan.csv"><span class="index-no">07</span><span class="index-title">Test plan — 43 cases with expected results</span><span class="index-file">test_plan.csv</span></a>
+      <a class="index-row" style="--hue:var(--teal)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/10_codebook.md"><span class="index-no">08</span><span class="index-title">Codebook — fields to analysis variables, table structure</span><span class="index-file">documentation/10_…</span></a>
+      <a class="index-row" style="--hue:var(--indigo)" href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/blob/main/Q3_Digital_Form_Development/documentation/11_scope_and_omissions.md"><span class="index-no">09</span><span class="index-title">What was deliberately left out, and why</span><span class="index-file">documentation/11_…</span></a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
+    <div class="swatches" aria-hidden="true">
+      <span style="background:var(--indigo)"></span><span style="background:var(--violet)"></span>
+      <span style="background:var(--teal)"></span><span style="background:var(--amber)"></span>
+      <span style="background:var(--coral)"></span>
+    </div>
     <div class="cols">
       <span>Yahaya Umar Muhammad · Senior Coordinator, Data and GIS Analytics assessment</span>
       <a href="https://github.com/umary1063/eHealth_Africa_Senior_Coordinator_GIS_Assessment/tree/main/Q3_Digital_Form_Development">View the full repository →</a>
@@ -266,3 +383,94 @@
     </div>
   </div>
 </footer>
+</div>
+
+<script>
+(function(){
+  // Hero canvas: a loose scatter of coloured dots standing in for the
+  // 2,524-settlement register the form actually serves in the field.
+  var canvas = document.getElementById('scatter');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var hues = ['--indigo','--violet','--teal','--amber','--coral'];
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dots = [];
+
+  function colorFor(v){
+    return getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  }
+
+  function seededRandom(seed){
+    return function(){
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return (seed % 10000) / 10000;
+    };
+  }
+
+  function build(){
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var rand = seededRandom(42);
+    var count = Math.min(160, Math.floor(rect.width / 9));
+    dots = [];
+    for(var i = 0; i < count; i++){
+      dots.push({
+        x: rand() * rect.width,
+        y: rect.height * 0.15 + rand() * rect.height * 0.85,
+        r: 1.4 + rand() * 2.6,
+        hue: hues[Math.floor(rand() * hues.length)],
+        phase: rand() * Math.PI * 2,
+        speed: 0.4 + rand() * 0.5,
+      });
+    }
+    return rect;
+  }
+
+  var rect = build();
+
+  function draw(t){
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    for(var i = 0; i < dots.length; i++){
+      var d = dots[i];
+      var alpha = reduceMotion ? 0.5 : 0.28 + 0.24 * Math.sin(d.phase + t * 0.001 * d.speed);
+      ctx.beginPath();
+      ctx.fillStyle = colorFor(d.hue);
+      ctx.globalAlpha = Math.max(0.12, alpha);
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if(!reduceMotion) requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+
+  var resizeTimer;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){ rect = build(); }, 150);
+  });
+
+  // Active-section highlight in the rail / chip nav
+  var navLinks = document.querySelectorAll('.rail a, .chipnav a');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+  if('IntersectionObserver' in window && sections.length){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          navLinks.forEach(function(a){
+            a.classList.toggle('active', a.getAttribute('href') === '#' + entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+})();
+</script>
