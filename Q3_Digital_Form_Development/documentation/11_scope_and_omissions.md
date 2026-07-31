@@ -68,15 +68,22 @@ Q3 requirement 14. Everything below was considered and left out on purpose, not 
    That same live test is what surfaced the language-policy bug documented in
    `06_language_and_translation.md` (the 120-row enumerator list rendering an identical
    placeholder string in Hausa) — a genuine defect found by functional testing, not a hypothetical
-   one, now fixed. What remains untested is runtime behaviour on an actual 2 GB Android tablet
-   specifically (rendering performance of the settlement cascade against 2,524 real rows on
-   low-end hardware, ODK Collect's own offline handling of the attached CSVs, and real-world GPS
-   capture in the field rather than a desktop browser's location API) and the specimen-label
-   check-digit and within-household-duplicate constraints, which have not yet been exercised
-   through the running form by a human tester. A device pretest with a small enumerator sample,
-   covering at least the specimen label entry (including a deliberate transposition) and one full
-   end-to-end household+child+specimen interview, should still happen before the full 24-team
-   rollout.
+   one, now fixed.
+
+   A self-hosted ODK Central instance (Oracle Cloud "Always Free" tier VM) is being provisioned to
+   continue this testing properly — Central, unlike a bare XLSForm-to-XForm converter or
+   KoboToolbox's shared hosting, is the actual target deployment platform this form is designed
+   for, and lets the specimen-label check digit, the within-household duplicate constraint, the
+   `medicine_list.csv` stub behaviour (defect D-05), and real ODK Collect Android behaviour all be
+   exercised against the same project the 24 teams would actually use. What remains genuinely
+   untested as of this build: runtime behaviour on an actual 2 GB Android tablet specifically
+   (rendering performance of the settlement cascade against 2,524 real rows on low-end hardware,
+   ODK Collect's own offline handling of the attached CSVs, and real-world GPS capture in the
+   field rather than a desktop browser's location API), and the specimen-label check-digit and
+   within-household-duplicate constraints, which have not yet been exercised through the running
+   form by a human tester. A device pretest with a small enumerator sample, covering at least the
+   specimen label entry (including a deliberate transposition) and one full end-to-end
+   household+child+specimen interview, should still happen before the full 24-team rollout.
 
 10. **A resolution to the operating-conditions vs. staff-roster headcount mismatch.** The
     operating conditions state "120 enumerators in 24 teams." `reference_media/staff_roster.csv`
