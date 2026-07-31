@@ -85,8 +85,21 @@ Q3 requirement 14. Everything below was considered and left out on purpose, not 
    unmistakable placeholder entries, is documented as a testing aid only in `testing/README.md`,
    is not referenced by `scripts/build_form.py`, and does not replace the committed
    `form/media/medicine_list.csv` stub, which remains the empty file that ships with the actual
-   deliverable. What remains genuinely untested as of this build: runtime behaviour on an actual
-   2 GB Android tablet specifically
+   deliverable.
+
+   This live rendering also surfaced a real bug that static review of the script had not caught:
+   the Section 7 group carrying `supervisor_note` (7.02) and the enumerator's own sign-off
+   (`supervisor_signoff_enum_code`, 7.03) was gated behind `form_active`
+   (`visit_result='1' and consent_given='1'`) — meaning it was unreachable whenever the interview
+   ended early. Two on-screen notes elsewhere in the form (`end_note_no_further`,
+   `consent_refused_note`) both instruct the enumerator to "sign at 7.03 and submit" in exactly
+   those cases, which is also what the paper form itself says to do for a refused, vacant, or
+   no-competent-adult outcome. The group's `relevant` condition has been removed — 7.02/7.03 are
+   now always reachable, version `2026073101` — see `constraint_register.csv`. Nothing else in
+   the form's logic depends on this change; it only affects when that one group is shown.
+
+   What remains genuinely untested as of this build: runtime behaviour on an actual 2 GB Android
+   tablet specifically
    (rendering performance of the settlement cascade against 2,524 real rows on low-end hardware,
    ODK Collect's own offline handling of the attached CSVs, and real-world GPS capture in the
    field rather than a desktop browser's location API), and the specimen-label check-digit and

@@ -143,7 +143,7 @@ def choice(list_name, name, label_en, label_ha=PENDING, **extra):
 settings = {
     "form_title": "Integrated Child Health and AMR Household Survey 2026",
     "form_id": "hh2026_v1",
-    "version": "2026073100",
+    "version": "2026073101",
     "default_language": "Hausa (ha)",
     "instance_name": "concat(${lga_name_txt}, '-', ${settlement_code}, '-', ${structure_no}, '-', ${hh_serial})",
     # theme-grid: renders the Section 3 roster repeat as a spreadsheet-style
@@ -902,9 +902,19 @@ end_group()  # s6
 
 # ===========================================================================
 # SECTION 7: CLOSE-OUT AND SUPERVISOR REVIEW
+#
+# NOT gated behind form_active. Both "end_note_no_further" (shown when
+# visit_result is 2/3/4) and "consent_refused_note" (shown when
+# consent_given=2) tell the enumerator to "sign at 7.03 and submit" --
+# instructions the paper form itself gives for exactly the terminal/refused
+# outcomes ("Where the result of visit is 2, 3 or 4, do not complete any
+# further section. Sign at 7.03 and hand the form to your supervisor").
+# Gating 7.03 behind a completed-and-consenting interview made it
+# unreachable in precisely the cases the form told the enumerator to use it
+# -- a real bug, not caught until the form was actually rendered live and
+# clicked through on the candidate's self-hosted Central instance.
 # ===========================================================================
-begin_group("s7", "Section 7: Close-out and supervisor review", "Kashi na 7: Kammalawa",
-            relevant=form_active)
+begin_group("s7", "Section 7: Close-out and supervisor review", "Kashi na 7: Kammalawa")
 
 calc("duration_minutes", "(decimal-date-time(${end}) - decimal-date-time(${start})) * 1440")
 note("interview_end_note", "Interview end time is captured automatically when you submit; "
@@ -927,6 +937,20 @@ q("text", "supervisor_note", "7.02  Observation that may help the office interpr
 q("select_one enumerator", "supervisor_signoff_enum_code", "7.03  Enumerator signature "
   "(select your code again to confirm)", "7.03  Tabbatar da lambar ka", required=True,
   appearance="minimal")
+constraint_entry("s7 group relevance (bug fix)", "7.02 / 7.03", "relevant condition removed",
+                  "The Section 7 group (supervisor_note, supervisor_signoff_enum_code) was "
+                  "gated behind form_active (visit_result=1 and consent_given=1) in an "
+                  "earlier build. Removed -- the group is now always reachable.",
+                  "Two on-screen notes (end_note_no_further, shown when visit_result is "
+                  "2/3/4; consent_refused_note, shown when consent_given=2) instruct the "
+                  "enumerator to 'sign at 7.03 and submit' -- exactly the paper form's own "
+                  "instruction for a refused, vacant, or no-competent-adult outcome. Gating "
+                  "7.03 behind a fully completed, consenting interview made it unreachable "
+                  "in precisely the cases the form told the enumerator to use it.",
+                  "Found by rendering the live form on the candidate's self-hosted ODK "
+                  "Central instance and reviewing the actual field order and relevance "
+                  "behaviour, not by static review of the script -- see documentation/"
+                  "11_scope_and_omissions.md, item 9")
 
 end_group()  # s7
 
