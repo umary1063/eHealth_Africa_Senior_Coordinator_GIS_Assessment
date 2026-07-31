@@ -75,8 +75,18 @@ Q3 requirement 14. Everything below was considered and left out on purpose, not 
    KoboToolbox's shared hosting, is the actual target deployment platform this form is designed
    for, and lets the specimen-label check digit, the within-household duplicate constraint, the
    `medicine_list.csv` stub behaviour (defect D-05), and real ODK Collect Android behaviour all be
-   exercised against the same project the 24 teams would actually use. What remains genuinely
-   untested as of this build: runtime behaviour on an actual 2 GB Android tablet specifically
+   exercised against the same project the 24 teams would actually use. Central correctly listed
+   `medicine_list.csv` among the form's seven required attachments during setup — confirming the
+   stub's dependency is declared correctly — but an attachment with zero data rows is a dead end
+   for manually clicking through the rest of the form during a walkthrough, since question 4.13
+   then has nothing to select. `testing/medicine_list_DUMMY_FOR_CENTRAL_TESTING_ONLY.csv` was
+   created at the candidate's explicit request, purely to unblock that one field on the Central
+   test project so the remaining sections can be exercised end to end; it uses deliberately fake,
+   unmistakable placeholder entries, is documented as a testing aid only in `testing/README.md`,
+   is not referenced by `scripts/build_form.py`, and does not replace the committed
+   `form/media/medicine_list.csv` stub, which remains the empty file that ships with the actual
+   deliverable. What remains genuinely untested as of this build: runtime behaviour on an actual
+   2 GB Android tablet specifically
    (rendering performance of the settlement cascade against 2,524 real rows on low-end hardware,
    ODK Collect's own offline handling of the attached CSVs, and real-world GPS capture in the
    field rather than a desktop browser's location API), and the specimen-label check-digit and
