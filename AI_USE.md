@@ -5,6 +5,74 @@ case, design decisions, judgement calls (thresholds, ranges, structural choices)
 interpretation are the candidate's own; AI assistance is limited to drafting, scaffolding, and
 mechanical generation from decisions the candidate specified and reviewed.
 
+## Q1 — Campaign Team Tracking and Coverage Reconciliation
+
+Built using OpenAI Codex and ChatGPT for code scaffolding and drafting, alongside the candidate's
+own design decisions, review, and analysis — the same standard as the rest of this document:
+thresholds, methodological choices (attribution tolerance distances, spatial weights definition,
+QA rule cut-offs, the reconciliation source-of-record decision), and interpretation of results are
+the candidate's own; AI assistance was limited to drafting and mechanical generation. This module
+was built in earlier working sessions with those tools, not in Claude Code, so the per-decision,
+per-correction level of disclosure given for Q3 below (which was built interactively in this tool)
+is not reconstructable from this session and is not attempted here.
+
+**Read-only audit and subsequent fix, 2026-07-31, in Claude Code.** A requested read-only audit of
+Q1 against the assessment's stated requirements found, among other things, that the supplied GPS
+track files contain 6–21 days of continuous logging each despite being named one file per team per
+day, and that this was silently corrupting settlement attribution for 66 of 160 team-days. With the
+candidate's explicit direction to implement a full fix rather than merely document the finding,
+Claude: added a seventh, documented QA rule (`source_file_date_mismatch`) and wired it into the
+attribution query; started, then — on the candidate's explicit instruction mid-task — reverted an
+attempt to add Hausa translations to Q3 constraint messages in the same session, replacing it with
+an escalated-defect note instead (see the Q3 entry below); started, and here completed, Docker
+Desktop setup, Python environment setup, and a full re-run of the Q1 pipeline (QA → attribution →
+visit classification → reconciliation → cluster analysis → cartography) against the live PostGIS
+container from the candidate's original build; fixed a pre-existing (not AI-introduced) hardcoded-
+statistics bug in the coverage-reconciliation notebook and an equivalent one found afterward in the
+A3 cartography script, both by making them read from their own computed output rather than literal
+numbers; re-executed all five Q1 notebooks headlessly (the standard `jupyter nbconvert --execute`
+path was unreliable in this environment, so a purpose-built in-process executor was used instead,
+disclosed in case its output differs subtly from a real Jupyter kernel's); and propagated the
+corrected figures through every Q1 markdown document, the top-level README, and
+`docs/Q1_Technical_Response.docx`. A second, unrelated documentation/code mismatch (ward severity
+described as a three-tier percentage-point scale in `docs/coverage_reconciliation_method.md` but
+implemented in `src/reconciliation/ward_coverage.py` as a binary flag) was found and corrected to
+describe the code as it actually behaves. This first fix produced a corrected estimate of 50 visited
+settlements at the 30 m baseline (originally 214), which was reported to the candidate as final.
+
+**Three further defects found during the candidate's own request to verify the fix, same session.**
+When the candidate asked Claude to re-check the first fix against the source requirements, Claude
+independently re-verified rather than re-asserting the same figures, and this surfaced three further,
+compounding defects, all disclosed here in full because each intermediate figure was reported to the
+candidate as final before the next one was found:
+
+1. The visited-settlement count did not move at all after a plausible-looking second fix (a missing
+   metres-to-kilometres conversion in the "implausible speed" QA rule, inflating calculated speed
+   1000x), which Claude flagged to the candidate as suspicious rather than accepting; hand-verification
+   on a genuinely clean point confirmed the bug, but fixing it alone still had zero visible effect.
+2. Investigating that non-effect found a second, compounding bug: the same rule's sequence
+   computations (previous point, gap, calculated speed, stationary clustering) still chained across
+   the contaminated wrong-day files identified in the first fix, so a corrected formula was still being
+   fed physically unrelated point pairs. Fixing this raised the estimate to 55 visited settlements,
+   again reported to the candidate as final.
+3. A discrepancy between the live database (55) and the notebook-written CSV outputs (still 50)
+   prompted a direct check that found `upsert_quality_flags` had never removed a flag row once a point
+   stopped being flagged across any of the session's re-runs — every fix had been silently re-polluted
+   by its own predecessor's stale flags, going back to the very first re-run. Fixing this and re-running
+   the entire pipeline one final time, with the database and every output file directly cross-checked
+   for agreement before anything was reported, produced the true final figure: 139 visited settlements
+   at the 30 m baseline.
+
+The candidate explicitly asked Claude to pause mid-pipeline and re-read the original Q1 requirements
+against everything changed, to check for scope drift; Claude did so and reported back that every
+change traced to one of the six numbered requirements (the required QA rules and their correctness,
+required attribution/reconciliation/cluster-statistic methodology left unchanged, and the required
+decision brief's actual operational deployability). All specific numbers, thresholds, and the
+interpretation of the widened GPS/e-tally gap (treated as a data-attribution artefact, not a literal
+coverage claim) are Claude's drafting of an argument explained to and directed by the candidate
+in-session; see `Q1_Campaign_Team_Tracking/technical_decisions.md` (2026-07-31 entries) for the full
+technical record, including the false starts.
+
 ## Q3 — Digital Form Development
 
 Claude (Anthropic, Claude Sonnet 5, in Claude Code) was used throughout, across a multi-session
@@ -49,6 +117,21 @@ are disclosed here because they matter for how this deliverable should be read:
 Version numbers (`2026060100` → `2026073100` → `2026073101`) and the infrastructure record in
 `documentation/07_deployment_and_version_control.md` reflect this iterative process rather than a
 single one-shot build.
+
+**Post-audit correction, 2026-07-31.** An independent read-only audit (below) flagged that all 13
+`constraint_message` fields are English-only, which risks the assessment's own automatic-loss-of-
+marks condition on constraint messages in a language the enumerator cannot read. Claude drafted
+Hausa translations for all 13 messages and began adding them to `scripts/build_form.py`; the
+candidate stopped this before it was completed or rebuilt, instructing that no translation be
+added and that the gap instead be documented as an escalated defect. The partial edit was reverted
+via `git restore` (never rebuilt, converted, or committed), and `documentation/06_language_and_translation.md`
+and `documentation/11_scope_and_omissions.md` were instead updated to name the `constraint_message`
+gap explicitly as a pre-deployment blocker requiring professional translation and native-speaker
+review, using the same resolved-vs-escalated framing as the defects report, rather than leaving it
+as background reasoning only. Separately, `test_plan.csv` row T26 was found to cite two incorrect
+cross-references (`constraint_register.csv` row C022, which is an unrelated keyboard-appearance
+fix, and `documentation/01_defects_report.md`, which does not discuss the household-size-vs-roster
+check at all) and was corrected to cite the actual rule, row C024.
 
 ## Q5 — Technical Coordination, and Q6 — Capability Development
 

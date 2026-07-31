@@ -42,7 +42,8 @@ def run_settlement_attribution(connection: Connection, scenario: AttributionScen
             BOOL_OR(quality_rule = 'reported_speed_disagreement') AS reported_speed_disagreement_flag,
             BOOL_OR(quality_rule = 'stationary_cluster') AS stationary_cluster_flag,
             BOOL_OR(quality_rule = 'gps_gap') AS gps_gap_flag,
-            BOOL_OR(quality_rule = 'outside_campaign_hours') AS outside_campaign_hours_flag
+            BOOL_OR(quality_rule = 'outside_campaign_hours') AS outside_campaign_hours_flag,
+            BOOL_OR(quality_rule = 'source_file_date_mismatch') AS source_file_date_mismatch_flag
         FROM processed.gps_quality_flags
         GROUP BY gps_track_point_id
     ), scoped_points AS (
@@ -51,18 +52,21 @@ def run_settlement_attribution(connection: Connection, scenario: AttributionScen
             COALESCE(qa.reported_speed_disagreement_flag, FALSE) AS reported_speed_disagreement_flag,
             COALESCE(qa.stationary_cluster_flag, FALSE) AS stationary_cluster_flag,
             COALESCE(qa.gps_gap_flag, FALSE) AS gps_gap_flag,
-            COALESCE(qa.outside_campaign_hours_flag, FALSE) AS outside_campaign_hours_flag
+            COALESCE(qa.outside_campaign_hours_flag, FALSE) AS outside_campaign_hours_flag,
+            COALESCE(qa.source_file_date_mismatch_flag, TRUE) AS source_file_date_mismatch_flag
         FROM raw.gps_points_raw g
         LEFT JOIN qa ON qa.gps_track_point_id = g.gps_track_point_id
         WHERE g.geom IS NOT NULL AND g.observed_at IS NOT NULL
           AND g.observed_at::date BETWEEN DATE '2026-03-09' AND DATE '2026-03-13'
           AND g.observed_at::time BETWEEN TIME '07:00' AND TIME '19:00'
+          AND COALESCE(qa.source_file_date_mismatch_flag, TRUE) = FALSE
     )
     INSERT INTO processed.gps_settlement_attributions (
         scenario_name, gps_track_point_id, settlement_id, observed_at, team_id, campaign_date,
         distance_to_settlement_m, applicable_tolerance_m, candidate_count, attribution_method,
         confidence_class, baseline_eligible, impossible_speed_flag, accuracy_quality_flag,
-        reported_speed_disagreement_flag, stationary_cluster_flag, gps_gap_flag, outside_campaign_hours_flag
+        reported_speed_disagreement_flag, stationary_cluster_flag, gps_gap_flag, outside_campaign_hours_flag,
+        source_file_date_mismatch_flag
     )
     SELECT %(scenario)s, p.gps_track_point_id, nearest.settlement_id, p.observed_at, p.team_id, p.observed_at::date,
         nearest.distance_m, nearest.applicable_tolerance_m, candidates.candidate_count,
@@ -72,7 +76,8 @@ def run_settlement_attribution(connection: Connection, scenario: AttributionScen
              ELSE 'high' END,
         NOT p.outside_campaign_hours_flag AND NOT p.impossible_speed_flag,
         p.impossible_speed_flag, p.accuracy_quality_flag, p.reported_speed_disagreement_flag,
-        p.stationary_cluster_flag, p.gps_gap_flag, p.outside_campaign_hours_flag
+        p.stationary_cluster_flag, p.gps_gap_flag, p.outside_campaign_hours_flag,
+        p.source_file_date_mismatch_flag
     FROM scoped_points p
     CROSS JOIN LATERAL (
         SELECT s.settlement_id,

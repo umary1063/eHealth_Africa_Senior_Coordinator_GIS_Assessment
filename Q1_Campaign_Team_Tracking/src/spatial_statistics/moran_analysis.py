@@ -140,7 +140,7 @@ def load_population(connection) -> pd.DataFrame:
 def _scenario(frame: pd.DataFrame, name: str, include_ambiguous: bool) -> pd.DataFrame:
     result = frame.copy() if include_ambiguous else frame.loc[frame["gps_visit_status"] != "ambiguous"].copy()
     result["missed_indicator"] = (result["gps_visit_status"] != "visited").astype(int)
-    expected = 2562 if include_ambiguous else 2382
+    expected = 2562 if include_ambiguous else 2318
     if len(result) != expected:
         raise ValueError(f"{name} expected {expected} settlements; found {len(result)}.")
     return result.reset_index(drop=True)

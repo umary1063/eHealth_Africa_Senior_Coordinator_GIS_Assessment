@@ -25,6 +25,21 @@ A small number of fields were left without a hint deliberately, not by omission 
 label plus its choice list is already unambiguous (`Sex`, `Supervisor code`, `State`), a hint
 would only restate the label, which is padding, not information.
 
+## Escalated, not resolved: every `constraint_message` is English-only
+
+Using the same resolved-vs-escalated framing as `01_defects_report.md`: the missing Hausa
+translation of `constraint_message` text is **escalated**, not resolved in the form. All 13
+`constraint_message` values in `scripts/build_form.py` currently carry `constraint_message::English
+(en)` only — there is no `constraint_message::Hausa (ha)` column at all, which is what
+`conversion/conversion_log.txt`'s own pyxform warning (`Language 'Hausa (ha)' is missing the survey
+constraint_message column`) is reporting. This maps directly onto the assessment's own stated
+automatic-loss-of-marks condition, "constraint messages left in a language the enumerator cannot
+read," against a workforce where 38% are not confident English readers — it is named here
+explicitly as a pre-deployment blocker requiring sign-off, not a background caveat. It should not
+ship to fieldwork until a professional Hausa translation (with back-translation and cognitive
+pre-testing, per the methodology below) has been completed and reviewed by a native speaker, the
+same standard the assessment itself applies to its own reference-form Hausa strings.
+
 ## Translation policy, and why it is a policy rather than a completed translation
 
 Short, high-frequency, unambiguous items (yes/no/don't know, male/female, common nouns like

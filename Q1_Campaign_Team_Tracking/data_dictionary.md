@@ -42,12 +42,12 @@ This dictionary records the confirmed source dataset structure and the descripti
 
 ## Spatial Statistics Outputs
 
-- **Analysis population:** Primary output excludes 180 GPS-ambiguous settlements and contains 2,382 unique planned settlements; the ambiguity sensitivity contains all 2,562.
+- **Analysis population:** Primary output excludes 244 GPS-ambiguous settlements and contains 2,318 unique planned settlements; the ambiguity sensitivity contains all 2,562. (Fully revised 2026-07-31 after four compounding GPS-pipeline defects were found and fixed — see `technical_decisions.md`; originally 180 excluded / 2,382 analysed.)
 - **`global_moran_summary.csv`:** scenario, weights specification, population, missed/visited counts, permutation settings, Global Moran's I, expected I, z-score, and permutation p-value.
 - **`local_moran_results.csv`:** one row per analysed settlement and scenario with projected coordinates, missed indicator, neighbour count, Local Moran's I, quadrant, spatial lag, raw and FDR-adjusted p-values, significance flags, and raw/FDR local labels.
 - **`cluster_summary.csv`:** local class counts by scenario and raw or FDR-adjusted inference.
 - **`weights_diagnostics.csv`:** KNN and distance-band neighbour, island, connectivity, and distance diagnostics.
-- **Executed interpretation:** The primary Global Moran's I is 0.046612 (permutation p=0.001). Raw local classes are retained, while all 2,382 primary local tests are `Not significant` after Benjamini-Hochberg FDR adjustment.
+- **Executed interpretation:** The primary Global Moran's I is 0.020281 (permutation p=0.026; fully revised 2026-07-31, originally 0.046612/p=0.001). Raw local classes are retained, while all 2,318 primary local tests are `Not significant` after Benjamini-Hochberg FDR adjustment.
 
 ## Decision-Product Evidence Confidence
 

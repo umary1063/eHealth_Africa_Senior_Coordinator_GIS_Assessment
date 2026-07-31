@@ -1,4 +1,4 @@
 scenario_name,attributed_points,distinct_points,ambiguous_attributions
-baseline_30m,23867,23867,97
-sensitivity_60m,27168,27168,164
-urban_accuracy_aware,24043,24043,99
+baseline_30m,7809,7809,78
+sensitivity_60m,8709,8709,96
+urban_accuracy_aware,7896,7896,80

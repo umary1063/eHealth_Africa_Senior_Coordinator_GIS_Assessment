@@ -1,8 +1,10 @@
 """Stable ReportLab A3 PDF renderer using the PostGIS evidence layers."""
 from __future__ import annotations
 
+import csv
 import json
 import math
+from datetime import date
 from pathlib import Path
 
 from reportlab.lib.colors import Color, HexColor, black, white
@@ -11,6 +13,21 @@ from reportlab.pdfgen import canvas
 
 from src.ingestion.reference_db_connection import get_reference_connection, reference_cursor
 from src.project_paths import project_root
+
+
+def _primary_global_moran() -> dict:
+    """Read the primary scenario's executed Global Moran's I from its own output CSV.
+
+    Read at generation time, rather than hardcoded, so this map cannot go stale
+    relative to `outputs/tables/global_moran_summary.csv` the way an earlier build
+    of this function did -- see technical_decisions.md, 2026-07-31.
+    """
+    summary_path = project_root() / "outputs" / "tables" / "global_moran_summary.csv"
+    with summary_path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if row["analysis_scenario"] == "primary_knn8_excluding_ambiguous":
+                return row
+    raise ValueError(f"No primary_knn8_excluding_ambiguous row found in {summary_path}")
 
 
 def _features(connection, sql: str):
@@ -109,12 +126,18 @@ def build_pdf() -> Path:
     pdf.setFillColor(HexColor("#1F4E79")); pdf.setFont("Helvetica-Bold", 9); pdf.drawString(830, 550, "Interpretation")
     pdf.setFillColor(HexColor("#263238")); pdf.setFont("Helvetica", 7)
     for index, line in enumerate(["Symbols show observed evidence, not proof of", "service delivery or non-performance.", "", "GPS-unvisited means no confirmed GPS visit", "evidence under the baseline method; it does not", "establish that a settlement was genuinely missed."]): pdf.drawString(830, 536-index*10, line)
-    _box(pdf, 42, 65, 245, 105, "Global spatial statistic", ["Primary k=8 Global Moran's I = 0.046612", "Expected I = -0.000420 | z = 4.821064", "999 permutations | p = 0.001"])
+    moran = _primary_global_moran()
+    _box(pdf, 42, 65, 245, 105, "Global spatial statistic", [
+        f"Primary k=8 Global Moran's I = {float(moran['global_moran_i']):.6f}",
+        f"Expected I = {float(moran['expected_i']):.6f} | z = {float(moran['z_score']):.6f}",
+        f"{moran['permutations']} permutations | p = {moran['permutation_p_value']}",
+    ])
     _box(pdf, 300, 65, 245, 105, "Local Moran interpretation", ["Exploratory screening patterns are not statistically", "significant after FDR correction. No confirmed local", "hotspots are shown or inferred."])
     _box(pdf, 558, 65, 590, 105, "Uncertainty and decision use", ["Absence of GPS evidence is not evidence of operational failure. Potential causes include logger non-use or failure, signal loss,", "attribution uncertainty, timing or identifier mismatch, and processing limitations. Prioritize rapid verification before assuming non-performance."])
     pdf.setFillColor(HexColor("#455A64")); pdf.setFont("Helvetica", 6.5); pdf.drawString(42, 42, "Projection: EPSG:32632 (WGS 84 / UTM zone 32N) | Sources: GPS tracks, settlement masterlist, e-tally, inaccessible-settlement list, administrative boundaries.")
     pdf.drawString(42, 31, "Method: baseline_30m attribution; 30 m tolerance; 3-point, 15-minute continuous visit-episode rule. Absence of GPS evidence is not evidence of operational failure.")
-    pdf.drawString(42, 20, "Cartographer: Yahaya Umar Muhammad | Date: 30 July 2026")
+    today = date.today()
+    pdf.drawString(42, 20, f"Cartographer: Yahaya Umar Muhammad | Date: {today.day} {today:%B %Y}")
     pdf.save(); return output
 
 

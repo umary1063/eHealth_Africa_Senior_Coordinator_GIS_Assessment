@@ -28,7 +28,7 @@ The ingestion registry records the source-file path and SHA256 checksum for each
 
 `COPY` is used to stream each bounded CSV batch into a temporary PostgreSQL staging table, avoiding the unstable client-side bulk insert path observed on Windows. The staged rows are merged into the raw table within the same file-level transaction. The registry entry is written only after every batch has copied and merged successfully; an exception rolls back the file transaction and logs the failed filename.
 
-Validation note: on a first run, the log reports the source and raw row counts for each loaded file. On a second run, the matching SHA256 checksum is detected and the same file is logged as skipped.
+Validation note: on a first run, the log reports the source and raw row counts for each loaded file. On a second run, the matching SHA256 checksum is detected and the same file is logged as skipped. This is exercised by an automated test, not only observed in logs: `tests/test_gps_ingestion_idempotency.py` re-ingests a real data-pack file twice and asserts the raw row count is unchanged and the second run reports itself as skipped, and separately asserts that a file whose content changes under an already-registered name is rejected rather than silently mixed in. Run with `pytest tests/` from `Q1_Campaign_Team_Tracking` (requires the PostGIS container and `src/.env.txt`; skips cleanly if either is unavailable).
 
 ## Reference Data Ingestion
 

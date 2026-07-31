@@ -24,7 +24,7 @@ T22,fieldwork date window,visit_date,negative,2026-07-01,Rejected,"Required boun
 T23,fieldwork date window,visit_date,boundary,2026-06-01,Accepted,Lower bound of the printed fieldwork period
 T24,fieldwork date window,visit_date,negative,2026-05-31,Rejected,One day before the lower bound
 T25,fieldwork date window,visit_date,boundary,2026-06-30,Accepted,Upper bound of the printed fieldwork period
-T26,household size vs roster,hh_size_stated + roster,negative (soft),"hh_size_stated=5, roster completed with 4 members listed","Not blocked -- on-screen note shown, form remains submittable; roster_mismatch_flag=1 in the export","Required case per Q3 requirement 9. Deliberately not a hard constraint -- see constraint_register.csv row C022 and documentation/01_defects_report.md"
+T26,household size vs roster,hh_size_stated + roster,negative (soft),"hh_size_stated=5, roster completed with 4 members listed","Not blocked -- on-screen note shown, form remains submittable; roster_mismatch_flag=1 in the export","Required case per Q3 requirement 9. Deliberately not a hard constraint -- see constraint_register.csv row C024"
 T27,household size vs roster,hh_size_stated + roster,positive,"hh_size_stated=4, roster completed with 4 members listed",No note shown; roster_mismatch_flag=0,Matching case, control for T26
 T28,asset ownership exclusivity,hh_assets,negative,"selected: H (None of these) + C (Mobile telephone)",Rejected,"Defect D-09 -- 'None of these' cannot combine with any other option"
 T29,asset ownership exclusivity,hh_assets,positive,"selected: H (None of these) only",Accepted,Control for T28

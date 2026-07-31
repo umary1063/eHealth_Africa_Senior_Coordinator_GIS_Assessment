@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS processed.gps_settlement_attributions (
     stationary_cluster_flag BOOLEAN NOT NULL DEFAULT FALSE,
     gps_gap_flag BOOLEAN NOT NULL DEFAULT FALSE,
     outside_campaign_hours_flag BOOLEAN NOT NULL DEFAULT FALSE,
+    source_file_date_mismatch_flag BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (scenario_name, gps_track_point_id),
     CONSTRAINT chk_attribution_scenario CHECK (scenario_name IN ('baseline_30m', 'sensitivity_60m', 'urban_accuracy_aware')),

@@ -26,6 +26,18 @@ Observations are split into team, campaign-date, and settlement episodes at time
 
 ## Interpretation
 
-Validated execution produced 214 visited, 180 ambiguous, and 2,168 unvisited settlements under `baseline_30m`. The `sensitivity_60m` scenario produced 241 visited, 225 ambiguous, and 2,096 unvisited settlements: 27 additional visited settlements, alongside 45 additional ambiguous settlements. The `urban_accuracy_aware` scenario produced 216 visited, 181 ambiguous, and 2,165 unvisited settlements: a marginal increase of 2 visited and 1 ambiguous settlement over baseline.
+**Fully revised 2026-07-31** (`technical_decisions.md`) after four compounding defects were found
+and fixed in the GPS pipeline: source files contain 6–21 days of continuous logging each despite
+being named one file per team per day, letting two different files contribute conflicting,
+physically simultaneous positions for the same team on the same real campaign date; the
+implausible-speed rule's `calculated_speed_kmh` was computed in metres per hour rather than
+kilometres per hour (a 1000x inflation); the same rule's sequence chaining still crossed
+contaminated files even after the first fix; and quality flags were never cleared between
+re-runs, so each fix was silently re-polluted by its predecessor's stale results until the flags
+table was made to fully replace itself on every run. All four are documented in full in
+`technical_decisions.md`. Restricting sequence-dependent computations to same-file-day points and
+clearing stale flags before each run changed every figure below.
+
+Validated execution produced 139 visited, 244 ambiguous, and 2,179 unvisited settlements under `baseline_30m` (originally 214/180/2,168). The `sensitivity_60m` scenario produced 171 visited, 254 ambiguous, and 2,137 unvisited settlements: 32 additional visited settlements, alongside 10 additional ambiguous settlements, over baseline. The `urban_accuracy_aware` scenario produced 142 visited, 246 ambiguous, and 2,174 unvisited settlements: an increase of 3 visited and 2 ambiguous settlements over baseline.
 
 The 30 m scenario remains the primary operational estimate. The 60 m scenario is retained as sensitivity analysis because it changes the visit count but introduces more ambiguity. The urban-specific adjustment is documented but does not materially change campaign conclusions. These are tracking-evidence classifications, not proof of vaccination delivery.

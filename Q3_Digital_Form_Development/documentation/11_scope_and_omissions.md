@@ -9,11 +9,15 @@ Q3 requirement 14. Everything below was considered and left out on purpose, not 
    claimed — worse than the honest gap. What *is* achievable without that risk (a same-submission
    duplicate check) is implemented.
 
-2. **Full Hausa translation of question text and constraint messages.** Structural support
-   (language columns, default language) is complete; the translations themselves are marked
-   pending professional translation and back-translation, per `06_language_and_translation.md`. A
-   confidently wrong clinical translation is a worse outcome for a low-English-confidence
-   enumerator corps than a visible placeholder.
+2. **Full Hausa translation of question text and constraint messages — escalated, not resolved.**
+   Structural support (language columns, default language) is complete; the translations
+   themselves are marked pending professional translation and back-translation, per
+   `06_language_and_translation.md`. A confidently wrong clinical translation is a worse outcome
+   for a low-English-confidence enumerator corps than a visible placeholder. The
+   `constraint_message` gap specifically is flagged there as a pre-deployment blocker: it matches
+   the assessment's own automatic-loss-of-marks condition on constraint messages left in a
+   language the enumerator cannot read, and must be resolved with a reviewed professional
+   translation before fieldwork, not left as-is.
 
 3. **Audio prompts.** The operating conditions describe a workforce with a mean of six years of
    schooling and low English confidence — audio-recorded Hausa prompts (ODK supports per-question
