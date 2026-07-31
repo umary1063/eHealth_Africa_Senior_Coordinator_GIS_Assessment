@@ -55,18 +55,35 @@ single one-shot build.
 Claude (Anthropic, Claude Sonnet 5, in Claude Code) drafted the prose of both written responses
 (`Q5_Technical_Coordination/Q5_Response.docx`, `Q6_Capability_Development/Q6_Response.docx`) from
 the candidate's own decisions and reasoning about the Part 3 scenario, and generated the `.docx`
-files programmatically from that content so page counts against the stated 3-page and 6-page
-(excluding annexes) limits could be checked and controlled directly rather than estimated. The
-technical decisions attributable to the candidate include: the choice of PostGIS with GeoGig
-branch-and-merge versioning as the named mechanism for concurrent spatial editing in Q5, and the
-specific reasoning behind it; the sequencing logic and 24-hour action order in Q5; the split
-between blocking and flagging data-quality rules and the justification for where that line sits;
-the interpretation of the Q6 capability-assessment evidence (the 0.11 self-rating/tested-knowledge
+files programmatically — including a shared eHealth Africa-styled template (headers, footers, page
+numbers, colour theme) — so page counts against the stated limits (3 pages, 6 pages excluding
+annexes) could be checked and controlled directly against the rendered PDF rather than estimated.
+
+The technical decisions attributable to the candidate include: the choice of a PostGIS-native
+controlled-editing workflow (staging tables, UUID identifiers, feature-level conflict detection,
+named-reviewer merge approval, row-level audit history) as the named mechanism for concurrent
+spatial editing in Q5, in preference to a dependency on an external versioning product; the
+24-hour sequencing logic and its five ordering criteria; the split between blocking and flagging
+data-quality rules; the categorised root-cause structure for the coverage discrepancy; the
+interpretation of the Q6 capability-assessment evidence (the 0.11 self-rating/tested-knowledge
 correlation and the zero-of-21 software-access finding) as the basis for course design rather than
-the cohort's stated demand; the four-level competency framework and its observable behaviours; the
-five-day course sequencing and the explicit scope decision on what is not taught; and the 90-day
-transfer-measurement plan. Every page-count and pagination check was run against the actual
-rendered PDF, not estimated from word count.
+the cohort's stated demand; the six-domain competency framework and its observable behaviours; the
+five-day course sequencing and the explicit scope decision on what is not taught; the 0–4
+demonstrated-capability scoring scale and the 90-day transfer-measurement plan; and the argument,
+placed in each document's own concluding section rather than as a separate question, connecting
+coordination fragility in Q5 to the counterpart's capability gap in Q6 — including its stated
+limits (institutional capability reduces the likelihood of escalation, it does not eliminate the
+operational cost of losing key staff).
+
+This module was substantially reworked on 2026-07-31 against a detailed content brief supplied by
+the candidate, which specified the structural argument to be carried through both responses, the
+required tables and sections, the PostGIS-native (rather than GeoGig-dependent) editing
+architecture, and the document's visual design. The rework was carried out directly in-session
+rather than via an unattended external agent. A first pass of this rework incorrectly introduced a
+separate "Question 7" document; the candidate corrected this, since Part 3 of the assessment
+contains only Questions 5 and 6, and the coordination/capability connection is an expectation to
+be argued within them, not a standalone compulsory question. That document was deleted and its
+content folded into the concluding sections of Q5 and Q6 instead, as reflected above.
 
 ## Other modules
 

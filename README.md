@@ -33,9 +33,15 @@ This repository contains a technical assessment submission demonstrating advance
 ## Assessment Overview
 
 The paper requires one question from Part 1 (Q1 or Q2), one from Part 2 (Q3 or Q4), and both
-compulsory Part 3 questions (Q5 and Q6). This submission is complete on that basis: Q1, Q3, Q5,
-and Q6 are attempted and finished; Q2 and Q4 are the un-attempted alternates within their parts,
-not outstanding work.
+compulsory Part 3 questions, which share one scenario:
+
+- Question 5: Coordinating Delivery Through the Round
+- Question 6: Building Capability in the Counterpart Agency
+
+This submission is complete on that basis: Q1, Q3, Q5, and Q6 are attempted and finished; Q2 and
+Q4 are the un-attempted alternates within their parts, not outstanding work. The connection
+between coordination resilience and capability development is a stated expectation of Part 3, not
+a separate compulsory question — it is argued directly in the concluding sections of Q5 and Q6.
 
 | Module | Capability Demonstrated | Status |
 |---|---|---|
@@ -127,15 +133,15 @@ Part 3 is compulsory and shares one scenario: mid-round resignations, a coverage
 at national level, a database corrupted by concurrent edits, a partner report due in nine days,
 and a counterpart agency waiting on training dates — all at once, on day three of seven.
 
-[Q5_Technical_Coordination/Q5_Response.docx](Q5_Technical_Coordination/Q5_Response.docx) sequences
-the first 24 hours by reversibility and compounding cost rather than by urgency as reported: the
-database is frozen, not fixed, before root cause is known, because deleting duplicates first would
-destroy the evidence needed to separate a database bug from the coverage discrepancy. The response
-names a specific technical mechanism — PostGIS with GeoGig branch-and-merge versioning, UUID
-identifiers, pre-merge validation, and commit-history audit trail — for concurrent spatial editing
-without duplication or lost work, and sets out a blocking-vs-flagging split for automated QA rules,
-a 10-day handover plan for the two departing analysts, and a delegation structure designed so the
-coordinator is not the bottleneck.
+[Q5_Technical_Coordination/Q5_Response.docx](Q5_Technical_Coordination/Q5_Response.docx) opens
+with a "First 24-Hour Response Sequence" table sequenced by risk to live delivery, reversibility,
+compounding data damage, reputational exposure, and dependency between actions, then works through
+a figure-of-record definition with a categorised root-cause table, a PostGIS-native controlled
+editing architecture for the shared spatial database (staging tables, UUID identifiers, feature-
+level conflict detection, named-reviewer merge approval, row-level audit history), a blocking-vs-
+flagging table for automated data quality rules, a 10-day handover plan for the two departing
+analysts, and a delegation structure built on named workstream leads so the coordinator is not the
+single point of failure.
 
 ---
 
@@ -150,12 +156,20 @@ software-access finding as the binding constraint on the whole programme, not a 
 of the five-day course installs QGIS on every participant's own machine, because no curriculum
 survives zero take-home tool access. The near-universal stated training demand is read as noise,
 not signal, given the self-rating/tested-knowledge correlation, so the course is sequenced from the
-objective evidence instead: foundational data handling and reproducible documentation (the weakest
-measured competency, 1.5/5) before cartography, and spatial statistics, remote sensing, web mapping,
-and automation are explicitly named as *not* taught this round. The response includes a four-level
-observable-behaviour competency framework, one 90-minute session built out in full as a stand-alone
-facilitator artefact, a demonstrated-capability pre/post assessment instrument, and a 90-day plan
+objective evidence instead, using a four-level, six-domain observable-behaviour competency
+framework (Annex A) rather than a generic beginner/intermediate/advanced scale. Spatial statistics,
+remote sensing, web mapping, and automation are explicitly named as *not* taught this round. The
+response includes a full stand-alone 90-minute facilitator artefact (Annex B), a 12-item,
+demonstrated-capability pre/post assessment instrument scored 0–4 (Annex C), and a 90-day plan
 measured by applied output on real departmental work rather than training satisfaction.
+
+Q5 and Q6 close by making the link between them explicit, rather than treating it as a separate
+question: Q5's closing section explains that the incident escalated *because* critical knowledge
+was concentrated in individuals, documentation was too weak to substitute for them, and delegation
+gave no one else the authority to act; Q6's closing section argues that capability building,
+reproducible documentation, peer review, and workflow ownership are structural controls against
+that same coordination fragility, while stating plainly that they reduce the likelihood of
+recurrence rather than eliminate the operational cost of losing key staff.
 
 ---
 
@@ -181,6 +195,7 @@ eHealth_Africa_Senior_Coordinator_GIS_Assessment/
 ├── AI_USE.md
 ├── environment.yml
 ├── Candidate_Profile/
+├── Candidate_Inputs/
 ├── Q1_Campaign_Team_Tracking/
 ├── Q2_Facility_Readiness_Accessibility/
 ├── Q3_Digital_Form_Development/
