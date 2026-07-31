@@ -142,7 +142,25 @@ settings = {
     "version": "2026060100",
     "default_language": "Hausa (ha)",
     "instance_name": "concat(${lga_name_txt}, '-', ${settlement_code}, '-', ${structure_no}, '-', ${hh_serial})",
+    # theme-grid: renders the Section 3 roster repeat as a spreadsheet-style
+    # table (one row per household member, one column per field) instead of
+    # a long vertical form repeated per person -- matches the paper form's
+    # own tabular roster layout (columns 1-8) far more closely than the
+    # default single-column theme. Applies to every group/repeat in the
+    # form, not just the roster; combined with 'minimal' on the select
+    # fields living inside the roster (below) so grid columns stay narrow
+    # and readable rather than each holding a full radio-button list.
+    "style": "theme-grid",
 }
+
+# Enketo/ODK Collect automatically offers a language switcher (visible as
+# "Choose Language" in the rendered form) whenever a form defines two or
+# more languages via label::<Language> (<code>) columns -- no separate
+# settings flag turns this on. This form defines English (en) and
+# Hausa (ha) throughout (see label::English (en) / label::Hausa (ha) on
+# every row below), with Hausa as default_language above, so the switcher
+# is already present; both KoboToolbox screenshots in this session's
+# testing show it working ("Choose Language: Hausa / English").
 
 # ===========================================================================
 # FRONT MATTER / METADATA
@@ -181,22 +199,22 @@ choice("state", "1", "Bansara", "Bansara")
 
 q("select_one_from_file lgas.csv", "lga", "Local Government Area", "Kananan Hukuma",
   hint_en="Select from the administrative list. Do not type the name.",
-  required=True)
+  required=True, appearance="minimal")
 
 calc("lga_name_txt", "${lga}")
 
 q("select_one_from_file wards.csv", "ward", "Ward", "Yankin gunduma",
-  required=True, choice_filter="lga_code=${lga}")
+  required=True, choice_filter="lga_code=${lga}", appearance="minimal")
 
 q("select_one_from_file settlements.csv", "settlement", "Settlement", "Gari/kauye",
   hint_en="Type a few letters to search. List has 2,524 entries -- do not scroll.",
-  required=True, choice_filter="ward_code=${ward}")
+  required=True, choice_filter="ward_code=${ward}", appearance="minimal")
 
 calc("settlement_code", "${settlement}")
 
 q("select_one yes_no", "settlement_local_name_known", "Is the settlement known locally by a "
   "different name?", "Shin mutanen yankin na kiran wannan wuri da wani suna daban?",
-  required=True)
+  required=True, appearance="quick")
 q("text", "settlement_local_name", "If yes, write the name used locally.",
   "Idan ee, rubuta sunan da ake amfani da shi a wurin.",
   relevant="${settlement_local_name_known}='1'")
@@ -218,7 +236,7 @@ constraint_entry("hh_serial", "1.07", "range", "1-999",
                   "Non-numeric or >3-digit entry", "Paper form coding box is three digits wide")
 
 q("select_one enumerator", "enumerator_code", "Enumerator code", "Lambar ma'aikaci",
-  required=True, hint_en="Select your code from the staff list.")
+  required=True, hint_en="Select your code from the staff list.", appearance="minimal")
 calc("team_code_auto", "pulldata('staff_roster','team_code','name',${enumerator_code})")
 q("text", "team_code_display", "Team code (auto-filled)", "Lambar kungiya (kai tsaye)",
   read_only=True, calculation="${team_code_auto}")
@@ -262,7 +280,8 @@ constraint_entry("gps_dwelling", "1.11", "range",
                   "for genuine edge-of-catchment points")
 
 q("select_one yes_no_dk", "prev_round_visited", "Was this household visited during the "
-  "October 2025 round?", "An ziyarci wannan gida a lokacin 2025 ba?", required=True)
+  "October 2025 round?", "An ziyarci wannan gida a lokacin 2025 ba?", required=True,
+  appearance="quick")
 q("text", "prev_round_hh_id", "Household identifier allocated in the October 2025 round",
   "Lambar da aka bawa gida a 2025",
   relevant="${prev_round_visited}='1'", required=True,
@@ -290,7 +309,7 @@ note("prev_round_children_u5_note",
      relevant="${prev_round_visited}='1' and ${prev_round_children_u5}!=''")
 
 q("select_one visit_result", "visit_result", "Result of visit", "Sakamakon ziyara",
-  required=True)
+  required=True, appearance="minimal")
 
 end_group()
 
@@ -311,7 +330,7 @@ q("select_one consent", "consent_given", "Does the respondent consent to the hou
   "interview?", "Wanda ake tambaya ya yarda a yi hira da gidan?", required=True)
 q("select_one relationship", "respondent_relationship", "Relationship of the respondent to "
   "the head of household", "Dangantakar wanda ake tambaya da shugaban gida",
-  relevant="${consent_given}='1'", required=True)
+  relevant="${consent_given}='1'", required=True, appearance="minimal")
 
 end_group()
 
@@ -360,15 +379,15 @@ q("integer", "line", "Line number", "Lamba", read_only=True,
 q("text", "member_name", "Name or initials", "Suna ko gajerun haruffa", required=True)
 
 q("select_one relationship_member", "member_relationship", "Relationship to head",
-  "Dangantaka da shugaban gida", required=True)
+  "Dangantaka da shugaban gida", required=True, appearance="minimal")
 
-q("select_one sex", "member_sex", "Sex", "Jinsi", required=True)
+q("select_one sex", "member_sex", "Sex", "Jinsi", required=True, appearance="minimal")
 
 q("select_one yes_no", "member_under5", "Is this person under five years old?",
   "Wannan mutum yana kasa da shekara biyar?", required=True,
   hint_en="Not on the paper form -- added so the digital form routes to the correct age "
           "field. See defects report D-02.",
-  hint_ha=PENDING)
+  hint_ha=PENDING, appearance="minimal")
 constraint_entry("member_under5", "n/a (added, drives 3(5)/3(6) routing)", "added field",
                   "select_one yes/no gates which of age_years / age_months is asked",
                   "The paper form leaves it to the enumerator's judgement which of columns "
@@ -426,7 +445,7 @@ q("select_one sex", "c_sex", "Sex of the child (copied from roster)",
 # is only relevant, and only required, when status = measured. The analysis
 # team can then never receive a 99 in a column of real weights.
 q("select_one measure_status", "weight_status", "Weight measurement status",
-  "Halin auna nauyi", required=True)
+  "Halin auna nauyi", required=True, appearance="minimal")
 q("decimal", "c_weight_kg", "Weight of the child (kg)", "Nauyin yaro (kg)",
   relevant="${weight_status}='1'", required=True,
   constraint=". >= 2.0 and . <= 30.0",
@@ -443,10 +462,10 @@ constraint_entry("c_weight_kg", "4.05", "sentinel split + range",
                   "decimal point)")
 
 q("select_one measure_status", "height_status", "Length/height measurement status",
-  "Halin auna tsawo", required=True)
+  "Halin auna tsawo", required=True, appearance="minimal")
 q("select_one measure_position", "measure_position", "Position in which the child was "
   "measured", "Yanayin da aka auna yaro",
-  relevant="${height_status}='1'", required=True)
+  relevant="${height_status}='1'", required=True, appearance="minimal")
 constraint_entry("measure_position", "4.07", "consistency (documented, not blocked)",
                   "Recorded alongside height so the office can apply the standard 0.7cm "
                   "recumbent/standing correction; a mid-survey change in which position is "
@@ -469,13 +488,14 @@ constraint_entry("c_height_cm", "4.06", "sentinel split + range",
                   "months")
 
 q("select_one card_seen", "vacc_card_seen", "May I see the child's vaccination card or "
-  "health record?", "Zan iya ganin katin allurar yaro ko bayanin lafiyarsa?", required=True)
+  "health record?", "Zan iya ganin katin allurar yaro ko bayanin lafiyarsa?", required=True,
+  appearance="minimal")
 q("select_one yes_no", "measles_from_card", "Copy from the card: is a measles dose recorded?",
   "Daga kati: an rubuta an yi wa yaro allurar kyanda?",
-  relevant="${vacc_card_seen}='1'", required=True)
+  relevant="${vacc_card_seen}='1'", required=True, appearance="minimal")
 q("select_one yes_no_dk", "measles_recall", "Has this child ever received a measles "
   "vaccination?", "Yaro ya taba samun allurar kyanda?",
-  relevant="${vacc_card_seen}='2'", required=True)
+  relevant="${vacc_card_seen}='2'", required=True, appearance="minimal")
 calc("measles_status", "if(${vacc_card_seen}='1', ${measles_from_card}, ${measles_recall})")
 constraint_entry("measles_status", "4.08-4.10", "sentinel/source separation",
                   "measles_status combines card-confirmed and recall answers into one "
@@ -487,17 +507,19 @@ constraint_entry("measles_status", "4.08-4.10", "sentinel/source separation",
                   "documented source, distinguishing card confirmed from caregiver recall'")
 
 q("select_one yes_no_dk", "diarrhoea_14d", "Has this child had diarrhoea in the past 14 "
-  "days?", "Yaro ya sha gudawa cikin kwanaki 14 da suka wuce?", required=True)
+  "days?", "Yaro ya sha gudawa cikin kwanaki 14 da suka wuce?", required=True,
+  appearance="minimal")
 
 q("select_one yes_no_dk", "antibiotic_30d", "Has this child taken any antibiotic medicine in "
   "the past 30 days?", "Yaro ya sha maganin rigakafin kwayoyin cuta cikin kwanaki 30 da suka "
-  "wuce?", required=True)
+  "wuce?", required=True, appearance="minimal")
 
 q("select_one medicine_list", "antibiotic_code", "Which antibiotic was taken?",
   "Wanne maganin rigakafi ne aka sha?",
   relevant="${antibiotic_30d}='1'", required=True,
   hint_en="PLACEHOLDER LIST -- the data pack did not include the ministry medicine list "
-          "referenced by the paper form. See defects report D-05.")
+          "referenced by the paper form. See defects report D-05.",
+  appearance="minimal")
 constraint_entry("antibiotic_code", "4.13", "data-pack gap, placeholder + escalation",
                   "select_one backed by an internal XLSForm choices list (medicine_list, 14 "
                   "rows), an illustrative WHO-AWaRe-informed list of 13 common oral/injectable "
@@ -515,13 +537,20 @@ q("text", "antibiotic_other", "If Other, write the name of the medicine as repor
 
 q("select_one yes_no_dk", "antibiotic_no_rx", "Was the medicine obtained without a "
   "prescription from a health worker?", "An sami maganin ba tare da takardar likita ba?",
-  relevant="${antibiotic_30d}='1'", required=True)
+  relevant="${antibiotic_30d}='1'", required=True, appearance="minimal")
 
 q("select_one photo_status", "antibiotic_photo", "Was a photograph of the medicine "
   "packaging taken?", "An dauki hoton fakitin magani?",
-  relevant="${antibiotic_30d}='1'", required=True)
+  relevant="${antibiotic_30d}='1'", required=True, appearance="minimal")
 q("image", "antibiotic_photo_file", "Photograph of medicine packaging",
-  "Hoton fakitin magani", relevant="${antibiotic_photo}='1'")
+  "Hoton fakitin magani", relevant="${antibiotic_photo}='1'", appearance="new")
+constraint_entry("antibiotic_photo_file appearance", "4.16", "appearance: new",
+                  "'new' forces the camera to open for a fresh capture; the device's photo "
+                  "gallery is not offered as a source",
+                  "An enumerator attaching an old or unrelated photo from the gallery instead "
+                  "of actually photographing this packaging, which would defeat the evidence "
+                  "purpose of the field entirely",
+                  "My judgement")
 constraint_entry("antibiotic_photo_file", "4.16", "added evidence field",
                   "image capture attached whenever antibiotic_photo=1 (photo taken)",
                   "The paper form records only whether a photo was taken, not the photo "
@@ -540,7 +569,7 @@ begin_group("specimen", "Section 5: Specimen collection", "Kashi na 5: Tattara s
             relevant="${eligible_s4}=1 and ${age_months} >= 12")
 
 q("select_one yes_no", "specimen_obtained", "Was a stool specimen obtained from this child?",
-  "An samu samfurin kashin yaro?", required=True)
+  "An samu samfurin kashin yaro?", required=True, appearance="minimal")
 constraint_entry("specimen section relevance", "5.01", "computed relevance, question removed",
                   "Section only shown when age_months>=12 (already on file); no separate "
                   "5.01 question is asked",
@@ -579,7 +608,6 @@ calc("label_check_expected", "if((${label_checksum} mod 11)=10, 'X', "
 q("text", "specimen_label", "Specimen label number (affix label, then transcribe in full)",
   "Lambar samfurin (a manne sannan a rubuta gaba daya)",
   relevant="${specimen_obtained}='1'", required=True,
-  appearance="numbers",
   constraint="regex(., '^BSN[0-9]{6}-[0-9X]$') and "
              "number(substr(.,3,6)) >= number(${label_range_start}) and "
              "number(substr(.,3,6)) <= number(${label_range_end}) and "
@@ -606,6 +634,18 @@ constraint_entry("specimen_label", "5.03", "format + range + check-digit + withi
                   "validation.md for worked test vectors, and documentation/05_duplicate_"
                   "label_detection.md for why a same-submission check only catches labels "
                   "reused within one household and not the full 9-day device history.")
+constraint_entry("specimen_label appearance (bug fix)", "5.03", "appearance removed",
+                  "An earlier build set appearance='numbers' on this field, which restricts "
+                  "the on-screen keyboard to digits only. This field's own format is "
+                  "BSN######-C -- letters and an occasional 'X' check character -- so a "
+                  "numeric-only keypad would have made a correctly formatted label untypeable. "
+                  "No appearance is set now; the default keyboard accepts the full alphanumeric "
+                  "format.",
+                  "A numeric keypad blocking entry of a field whose own required format "
+                  "includes letters",
+                  "Caught on review while adding appearances for this update, not by a field "
+                  "test -- flagged here anyway since it is exactly the kind of thing device "
+                  "testing (documentation/11_scope_and_omissions.md, item 9) is meant to catch")
 
 q("time", "specimen_cold_box_time", "Time the specimen was placed in the cold box",
   "Lokacin da aka sa samfurin cikin akwatin sanyi",
@@ -623,7 +663,8 @@ constraint_entry("specimen_temp_c", "5.05", "range", "0.0-12.0 degrees C",
                   "rejecting clear entry errors")
 
 q("select_one no_specimen_reason", "specimen_no_reason", "Reason no specimen was obtained",
-  "Dalilin da ba a samu samfurin ba", relevant="${specimen_obtained}='2'", required=True)
+  "Dalilin da ba a samu samfurin ba", relevant="${specimen_obtained}='2'", required=True,
+  appearance="minimal")
 q("text", "specimen_no_reason_other", "If Other, specify", "Idan Wani, bayyana",
   relevant="${specimen_no_reason}='96'", required=True)
 
@@ -670,23 +711,26 @@ begin_group("s6", "Section 6: Household environment", "Kashi na 6: Muhallin gida
             relevant=form_active)
 
 q("select_one water_source", "water_source", "Main source of drinking water",
-  "Babban tushen ruwan sha", required=True)
+  "Babban tushen ruwan sha", required=True, appearance="minimal")
 q("select_one toilet_type", "toilet_type", "Kind of toilet facility usually used",
-  "Irin bayan gida da ake amfani da shi", required=True)
+  "Irin bayan gida da ake amfani da shi", required=True, appearance="minimal")
 q("select_one yes_no", "livestock_in_compound", "Does this household keep poultry or "
   "livestock inside the compound?", "Gidan yana da kaji ko dabbobi a cikin gida?",
-  required=True)
+  required=True, appearance="quick")
 q("select_one yes_no_dk", "animal_antibiotics_12m", "Have any antibiotic medicines been "
   "given to these animals in the past 12 months?", "An bawa dabbobin magungunan rigakafi "
-  "cikin watanni 12 da suka wuce?", relevant="${livestock_in_compound}='1'", required=True)
+  "cikin watanni 12 da suka wuce?", relevant="${livestock_in_compound}='1'", required=True,
+  appearance="quick")
 q("select_one handwash", "handwash_station", "Handwashing station with soap and water "
-  "available?", "Akwai wurin wanke hannu da sabulu da ruwa?", required=True)
+  "available?", "Akwai wurin wanke hannu da sabulu da ruwa?", required=True,
+  appearance="quick")
 q("select_one yes_no_dk", "hh_diarrhoea_2w", "Has any member of this household had "
   "diarrhoea in the past two weeks?", "Wani a gida ya sha gudawa cikin makonni biyu da suka "
-  "wuce?", required=True)
+  "wuce?", required=True, appearance="quick")
 
 q("select_multiple assets", "hh_assets", "Which of the following does this household own?",
   "Wanne daga cikin wadannan gidan yake da su?", required=True,
+  appearance="columns-2",
   constraint="not(selected(., 'H')) or count-selected(.)=1",
   constraint_message="'None of these' cannot be selected together with any other item.")
 constraint_entry("hh_assets", "6.07", "mutual exclusivity", "selected('H') implies "
@@ -719,18 +763,19 @@ constraint_entry("duration_minutes", "7.01", "added field, replaces manual entry
                   "operating-conditions fraud case as the design driver")
 
 q("text", "supervisor_note", "Observation that may help the office interpret this form",
-  "Bayani da zai taimaka wa ofis")
+  "Bayani da zai taimaka wa ofis", appearance="multiline")
 q("select_one enumerator", "supervisor_signoff_enum_code", "Enumerator signature (select "
-  "your code again to confirm)", "Tabbatar da lambar ka", required=True)
+  "your code again to confirm)", "Tabbatar da lambar ka", required=True, appearance="minimal")
 
 end_group()  # s7
 
 begin_group("s7sup", "Supervisor review (completed after handover, not by the enumerator)",
             "Bitar mai kula", appearance="field-list")
 
-q("select_one enumerator", "supervisor_code", "Supervisor code", "Lambar mai kula")
+q("select_one enumerator", "supervisor_code", "Supervisor code", "Lambar mai kula",
+  appearance="minimal")
 q("select_one supervisor_decision", "supervisor_decision", "Supervisor decision on this "
-  "form", "Shawarar mai kula")
+  "form", "Shawarar mai kula", appearance="minimal")
 
 end_group()
 
