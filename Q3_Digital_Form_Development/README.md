@@ -86,6 +86,19 @@ producing). This single choice is what resolves defects D-01 and D-04, half of r
 most of the specimen-section logic in one move; see `documentation/01_defects_report.md` and
 `documentation/10_codebook.md` for the consequences for export table structure.
 
+## Cross-referencing the digital form back to the paper questionnaire
+
+Every field that has a direct paper equivalent carries that question's own number as a literal
+prefix in its label -- `1.02  Local Government Area`, `4.05  Weight measurement status`, `5.03
+Specimen label number`. The Section 3 roster columns use the paper table's own `(1)`-`(8)`
+notation instead, since the paper form numbers them as table columns, not standalone questions.
+Fields that exist only in the digital form (no paper equivalent -- `member_under5`, the automatic
+`start`/`end` timestamps, `team_code_display`) carry no number, since inventing one would imply a
+paper source that doesn't exist. This is why `constraint_register.csv` and every document in
+`documentation/` can cite a bare question number ("4.05", "5.03") and have it mean the same thing
+in the paper questionnaire, the running form, and the constraint register -- one addressing
+scheme, not three that have to be mentally cross-walked.
+
 ## Data-pack gap disclosed up front
 
 `reference_media/` does not include a medicine list, although question 4.13 and the pack's own

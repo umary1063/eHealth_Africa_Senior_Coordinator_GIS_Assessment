@@ -6,6 +6,24 @@ sets `default_language: Hausa (ha)`, and every field carries a `label::Hausa (ha
 alongside `label::English (en)`; a supervisor or the office can switch the running language from
 the ODK Collect form-language menu without the form needing to be redeployed.
 
+## Hints and guidance hints
+
+Most interactive questions now also carry `hint::English (en)` / `hint::Hausa (ha)` -- a short
+line always visible under the question, used for the kind of interviewer instruction the paper
+form put inline (read the consent script exactly, observe the handwashing station rather than
+just asking about it, record what the vaccination card says rather than what the caregiver
+recalls). A handful of fields carry a `guidance_hint` as well -- ODK's separate, collapsed-by-
+default "more info" panel, used only where there is genuinely deeper, optional detail that would
+clutter the primary hint: the GPS accuracy threshold, the WHO recumbent/standing measurement
+convention, the specimen label's check-digit behaviour, and the medicine-list placeholder caveat.
+`guidance_hint` text is currently English-only, for the same reason `constraint_message` is
+(above): it is the same register of procedural/technical precision, and a wrong translation there
+carries the same risk as a wrong translation of the question text itself.
+
+A small number of fields were left without a hint deliberately, not by omission -- where the
+label plus its choice list is already unambiguous (`Sex`, `Supervisor code`, `State`), a hint
+would only restate the label, which is padding, not information.
+
 ## Translation policy, and why it is a policy rather than a completed translation
 
 Short, high-frequency, unambiguous items (yes/no/don't know, male/female, common nouns like
