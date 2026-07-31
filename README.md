@@ -32,14 +32,19 @@ This repository contains a technical assessment submission demonstrating advance
 
 ## Assessment Overview
 
+The paper requires one question from Part 1 (Q1 or Q2), one from Part 2 (Q3 or Q4), and both
+compulsory Part 3 questions (Q5 and Q6). This submission is complete on that basis: Q1, Q3, Q5,
+and Q6 are attempted and finished; Q2 and Q4 are the un-attempted alternates within their parts,
+not outstanding work.
+
 | Module | Capability Demonstrated | Status |
 |---|---|---|
-| Q1 | Campaign GPS tracking, settlement reconciliation, spatial statistics | Complete |
-| Q2 | Facility accessibility and spatial database modelling | Planned |
-| Q3 | Digital survey instrument engineering | Complete |
-| Q4 | Complex survey inference | Planned |
-| Q5 | Technical coordination and delivery management | Complete |
-| Q6 | Capability development framework | Complete |
+| Q1 | Campaign GPS tracking, settlement reconciliation, spatial statistics | Complete — attempted |
+| Q2 | Facility accessibility and spatial database modelling | Not attempted (Part 1 alternate — Q1 chosen) |
+| Q3 | Digital survey instrument engineering | Complete — attempted |
+| Q4 | Complex survey inference | Not attempted (Part 2 alternate — Q3 chosen) |
+| Q5 | Technical coordination and delivery management | Complete — compulsory |
+| Q6 | Capability development framework | Complete — compulsory |
 
 ---
 
