@@ -50,6 +50,24 @@ Version numbers (`2026060100` → `2026073100` → `2026073101`) and the infrast
 `documentation/07_deployment_and_version_control.md` reflect this iterative process rather than a
 single one-shot build.
 
+## Q5 — Technical Coordination, and Q6 — Capability Development
+
+Claude (Anthropic, Claude Sonnet 5, in Claude Code) drafted the prose of both written responses
+(`Q5_Technical_Coordination/Q5_Response.docx`, `Q6_Capability_Development/Q6_Response.docx`) from
+the candidate's own decisions and reasoning about the Part 3 scenario, and generated the `.docx`
+files programmatically from that content so page counts against the stated 3-page and 6-page
+(excluding annexes) limits could be checked and controlled directly rather than estimated. The
+technical decisions attributable to the candidate include: the choice of PostGIS with GeoGig
+branch-and-merge versioning as the named mechanism for concurrent spatial editing in Q5, and the
+specific reasoning behind it; the sequencing logic and 24-hour action order in Q5; the split
+between blocking and flagging data-quality rules and the justification for where that line sits;
+the interpretation of the Q6 capability-assessment evidence (the 0.11 self-rating/tested-knowledge
+correlation and the zero-of-21 software-access finding) as the basis for course design rather than
+the cohort's stated demand; the four-level competency framework and its observable behaviours; the
+five-day course sequencing and the explicit scope decision on what is not taught; and the 90-day
+transfer-measurement plan. Every page-count and pagination check was run against the actual
+rendered PDF, not estimated from word count.
+
 ## Other modules
 
 To be completed as each module is finalised.

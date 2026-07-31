@@ -20,6 +20,8 @@ This repository contains a technical assessment submission demonstrating advance
 - [Technical Architecture](#technical-architecture)
 - [Q1 Campaign Tracking](#q1--campaign-team-tracking-and-coverage-reconciliation)
 - [Q3 Digital Form Development](#q3--digital-form-development)
+- [Q5 Technical Coordination](#q5--coordinating-delivery-through-the-round)
+- [Q6 Capability Development](#q6--building-capability-in-the-counterpart-agency)
 - [Technical Stack](#technical-stack)
 - [Repository Structure](#repository-structure)
 - [Reproducibility Principles](#reproducibility-principles)
@@ -36,8 +38,8 @@ This repository contains a technical assessment submission demonstrating advance
 | Q2 | Facility accessibility and spatial database modelling | Planned |
 | Q3 | Digital survey instrument engineering | Complete |
 | Q4 | Complex survey inference | Planned |
-| Q5 | Technical coordination and delivery management | Planned |
-| Q6 | Capability development framework | Planned |
+| Q5 | Technical coordination and delivery management | Complete |
+| Q6 | Capability development framework | Complete |
 
 ---
 
@@ -111,6 +113,44 @@ modulus-11 check digit catches every adjacent-digit transposition, and an honest
 whether a self-contained form can detect a duplicate specimen label across nine offline days
 (it cannot, in full — the achievable part is implemented, the rest is described as an
 architecture, not claimed as done).
+
+---
+
+## Q5 — Coordinating Delivery Through the Round
+
+Part 3 is compulsory and shares one scenario: mid-round resignations, a coverage figure disputed
+at national level, a database corrupted by concurrent edits, a partner report due in nine days,
+and a counterpart agency waiting on training dates — all at once, on day three of seven.
+
+[Q5_Technical_Coordination/Q5_Response.docx](Q5_Technical_Coordination/Q5_Response.docx) sequences
+the first 24 hours by reversibility and compounding cost rather than by urgency as reported: the
+database is frozen, not fixed, before root cause is known, because deleting duplicates first would
+destroy the evidence needed to separate a database bug from the coverage discrepancy. The response
+names a specific technical mechanism — PostGIS with GeoGig branch-and-merge versioning, UUID
+identifiers, pre-merge validation, and commit-history audit trail — for concurrent spatial editing
+without duplication or lost work, and sets out a blocking-vs-flagging split for automated QA rules,
+a 10-day handover plan for the two departing analysts, and a delegation structure designed so the
+coordinator is not the bottleneck.
+
+---
+
+## Q6 — Building Capability in the Counterpart Agency
+
+The department's own capability assessment found a composite score of 36/100, an objective
+knowledge score of 57%, a correlation of 0.11 between self-rated and tested knowledge, and zero of
+21 staff with access to QGIS or ArcGIS.
+
+[Q6_Capability_Development/Q6_Response.docx](Q6_Capability_Development/Q6_Response.docx) treats the
+software-access finding as the binding constraint on the whole programme, not a footnote — day one
+of the five-day course installs QGIS on every participant's own machine, because no curriculum
+survives zero take-home tool access. The near-universal stated training demand is read as noise,
+not signal, given the self-rating/tested-knowledge correlation, so the course is sequenced from the
+objective evidence instead: foundational data handling and reproducible documentation (the weakest
+measured competency, 1.5/5) before cartography, and spatial statistics, remote sensing, web mapping,
+and automation are explicitly named as *not* taught this round. The response includes a four-level
+observable-behaviour competency framework, one 90-minute session built out in full as a stand-alone
+facilitator artefact, a demonstrated-capability pre/post assessment instrument, and a 90-day plan
+measured by applied output on real departmental work rather than training satisfaction.
 
 ---
 

@@ -1,8 +1,8 @@
-campaign_date,team_id,settlement_id,ward_code,lga_name,target_population_under5,doses_administered,source_file,source_row_number
-2026-03-10,T30,X00001,W034,,31,44,etally_daily.csv,2018
-2026-03-12,T03,X00002,W027,,35,23,etally_daily.csv,2019
-2026-03-09,T23,X00003,W024,,74,52,etally_daily.csv,2020
-2026-03-10,T01,X00004,W018,,87,34,etally_daily.csv,2021
-2026-03-11,T09,X00005,W016,,77,52,etally_daily.csv,2022
-2026-03-12,T26,X00006,W040,,24,24,etally_daily.csv,2023
-2026-03-12,T23,X00007,W033,,39,71,etally_daily.csv,2024
+etally_unmatched_id,campaign_date,team_id,settlement_id,ward_code,lga_name,target_population_under5,doses_administered,source_file,source_row_number,created_at
+1,2026-03-10,T30,X00001,W034,,31,44,etally_daily.csv,2018,2026-07-30 20:17:25.720476+00:00
+2,2026-03-12,T03,X00002,W027,,35,23,etally_daily.csv,2019,2026-07-30 20:17:25.720476+00:00
+3,2026-03-09,T23,X00003,W024,,74,52,etally_daily.csv,2020,2026-07-30 20:17:25.720476+00:00
+4,2026-03-10,T01,X00004,W018,,87,34,etally_daily.csv,2021,2026-07-30 20:17:25.720476+00:00
+5,2026-03-11,T09,X00005,W016,,77,52,etally_daily.csv,2022,2026-07-30 20:17:25.720476+00:00
+6,2026-03-12,T26,X00006,W040,,24,24,etally_daily.csv,2023,2026-07-30 20:17:25.720476+00:00
+7,2026-03-12,T23,X00007,W033,,39,71,etally_daily.csv,2024,2026-07-30 20:17:25.720476+00:00
