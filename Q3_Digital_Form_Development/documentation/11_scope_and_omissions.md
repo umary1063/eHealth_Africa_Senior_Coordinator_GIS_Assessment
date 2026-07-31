@@ -59,13 +59,24 @@ Q3 requirement 14. Everything below was considered and left out on purpose, not 
 
 9. **Field-testing on physical Android hardware.** `conversion/conversion_log.txt` documents a
    real, successful XLSForm→XForm conversion including the Java-based ODK Validate structural
-   check — the same validator ODK Central runs before accepting a form. It does not, and cannot,
-   confirm runtime behaviour on an actual 2 GB Android tablet (rendering performance of the
-   settlement cascade with 2,524 real rows in `select_one_from_file`, exact behaviour of
-   `pulldata()` against the shipped CSVs, real GPS/geopoint capture). A device pretest with a
-   small enumerator sample, covering at least the settlement search, the specimen label entry,
-   and one full end-to-end household+child+specimen interview, should happen before the full
-   24-team rollout.
+   check — the same validator ODK Central runs before accepting a form. Since that conversion,
+   the form has also been deployed to a live KoboToolbox project (a KoboToolbox/ODK-family
+   platform) with all six media CSVs attached and exercised through KoboToolbox's own Enketo
+   preview in a desktop browser — this confirmed the LGA→Ward→Settlement cascade resolves
+   correctly against `select_one_from_file` with the real CSVs attached, the GPS/geopoint widget
+   renders with an OpenStreetMap picker, and the default-language switch to Hausa takes effect.
+   That same live test is what surfaced the language-policy bug documented in
+   `06_language_and_translation.md` (the 120-row enumerator list rendering an identical
+   placeholder string in Hausa) — a genuine defect found by functional testing, not a hypothetical
+   one, now fixed. What remains untested is runtime behaviour on an actual 2 GB Android tablet
+   specifically (rendering performance of the settlement cascade against 2,524 real rows on
+   low-end hardware, ODK Collect's own offline handling of the attached CSVs, and real-world GPS
+   capture in the field rather than a desktop browser's location API) and the specimen-label
+   check-digit and within-household-duplicate constraints, which have not yet been exercised
+   through the running form by a human tester. A device pretest with a small enumerator sample,
+   covering at least the specimen label entry (including a deliberate transposition) and one full
+   end-to-end household+child+specimen interview, should still happen before the full 24-team
+   rollout.
 
 10. **A resolution to the operating-conditions vs. staff-roster headcount mismatch.** The
     operating conditions state "120 enumerators in 24 teams." `reference_media/staff_roster.csv`

@@ -750,82 +750,126 @@ choice("yes_no_dk", "8", "Do not know", "Ban sani ba")
 choice("consent", "1", "Consent given", "An yarda")
 choice("consent", "2", "Consent refused", "An ki")
 
-for code, label in [("1", "Head"), ("2", "Spouse"), ("3", "Son or daughter"),
-                     ("4", "Parent"), ("5", "Other relative"), ("6", "Not related")]:
-    choice("relationship", code, label, PENDING)
+# ---------------------------------------------------------------------------
+# Below: real Hausa for every SHORT, HIGH-FREQUENCY, UNAMBIGUOUS choice list --
+# family-relationship terms, water/toilet/asset categories, administrative
+# decisions -- consistent with the language policy actually stated in
+# documentation/06_language_and_translation.md. PENDING is reserved for full
+# clinical/procedural SENTENCES (question text, constraint messages) and for
+# the enumerator list, which needs no translation at all (see below), not for
+# short everyday vocabulary. An earlier build broke this rule by defaulting
+# every choice() call to PENDING and only overriding a handful -- caught by
+# testing the form live in KoboToolbox, where a 120-option select_one
+# (question 1.08) rendered the same placeholder string 120 times over in
+# Hausa, the form's own default language. Fixed here, not papered over.
+# ---------------------------------------------------------------------------
+for code, label, ha in [("1", "Head", "Shugaban gida"), ("2", "Spouse", "Miji ko Matar aure"),
+                         ("3", "Son or daughter", "Da ko 'Ya"), ("4", "Parent", "Uba ko Uwa"),
+                         ("5", "Other relative", "Sauran dangi"),
+                         ("6", "Not related", "Ba dangi ba")]:
+    choice("relationship", code, label, ha)
 
-for code, label in [("1", "Head"), ("2", "Spouse"), ("3", "Son or daughter"),
-                     ("4", "Parent"), ("5", "Other relative"), ("6", "Not related"),
-                     ("7", "Self")]:
-    choice("relationship_member", code, label, PENDING)
+for code, label, ha in [("1", "Head", "Shugaban gida"), ("2", "Spouse", "Miji ko Matar aure"),
+                         ("3", "Son or daughter", "Da ko 'Ya"), ("4", "Parent", "Uba ko Uwa"),
+                         ("5", "Other relative", "Sauran dangi"),
+                         ("6", "Not related", "Ba dangi ba"), ("7", "Self", "Kansa/Kanta")]:
+    choice("relationship_member", code, label, ha)
 
 choice("sex", "1", "Male", "Namiji")
 choice("sex", "2", "Female", "Mace")
 
 choice("visit_result", "1", "Completed", "An kammala")
 choice("visit_result", "2", "Refused", "An ki")
-choice("visit_result", "3", "No competent adult after three visits", PENDING)
-choice("visit_result", "4", "Dwelling vacant or demolished", PENDING)
+choice("visit_result", "3", "No competent adult after three visits",
+       "Babu babba mai iya bayar da amsa bayan ziyara uku")
+choice("visit_result", "4", "Dwelling vacant or demolished", "Gidan babu kowa ko an rushe shi")
 
 choice("measure_status", "1", "Measured", "An auna")
 choice("measure_status", "2", "Not measured", "Ba a auna ba")
-choice("measure_status", "3", "Caregiver/child declined", PENDING)
+choice("measure_status", "3", "Caregiver/child declined", "Mai kula ko yaro ya ki")
 
-choice("measure_position", "1", "Recumbent length", PENDING)
-choice("measure_position", "2", "Standing height", PENDING)
+choice("measure_position", "1", "Recumbent length", "Tsawo, kwance")
+choice("measure_position", "2", "Standing height", "Tsawo, a tsaye")
 
-choice("card_seen", "1", "Card, card copy, or electronic record seen", PENDING)
+choice("card_seen", "1", "Card, card copy, or electronic record seen",
+       "An ga katin, kwafinsa, ko bayanin lantarki")
 choice("card_seen", "2", "No card seen", "Ba a ga kati ba")
 
 choice("photo_status", "1", "Photograph taken", "An dauki hoto")
 choice("photo_status", "2", "Not available", "Babu")
-choice("photo_status", "3", "Caregiver declined", PENDING)
+choice("photo_status", "3", "Caregiver declined", "Mai kula ya ki")
 
-choice("no_specimen_reason", "1", "Caregiver refused", PENDING)
-choice("no_specimen_reason", "2", "Child absent", PENDING)
-choice("no_specimen_reason", "3", "Unable to produce", PENDING)
-choice("no_specimen_reason", "4", "Container spoiled", PENDING)
+choice("no_specimen_reason", "1", "Caregiver refused", "Mai kula ya ki")
+choice("no_specimen_reason", "2", "Child absent", "Yaro ba ya nan")
+choice("no_specimen_reason", "3", "Unable to produce", "Ba a iya samu ba")
+choice("no_specimen_reason", "4", "Container spoiled", "Akwatin ya lalace")
 choice("no_specimen_reason", "96", "Other", "Wani")
 
-water_opts = ["Piped into dwelling", "Piped into compound", "Public tap or standpipe",
-              "Tube well or borehole", "Protected dug well", "Unprotected dug well",
-              "Protected spring", "Unprotected spring", "Rainwater", "Tanker or cart",
-              "Surface water"]
-for i, label in enumerate(water_opts, start=1):
-    choice("water_source", str(i), label, PENDING)
+water_opts = [
+    ("Piped into dwelling", "Famfo a cikin gida"),
+    ("Piped into compound", "Famfo a filin gida"),
+    ("Public tap or standpipe", "Famfon jama'a"),
+    ("Tube well or borehole", "Rijiyar bututu"),
+    ("Protected dug well", "Rijiya mai kariya"),
+    ("Unprotected dug well", "Rijiya marar kariya"),
+    ("Protected spring", "Maɓulɓula mai kariya"),
+    ("Unprotected spring", "Maɓulɓula marar kariya"),
+    ("Rainwater", "Ruwan sama"),
+    ("Tanker or cart", "Ruwan tanka ko keken ruwa"),
+    ("Surface water", "Ruwan bude (kogi ko tafki)"),
+]
+for i, (label, ha) in enumerate(water_opts, start=1):
+    choice("water_source", str(i), label, ha)
 
-toilet_opts = ["Flush to sewer", "Flush to septic tank", "Flush to pit latrine",
-               "Ventilated improved pit", "Pit latrine with slab", "Pit latrine without slab",
-               "Composting toilet", "Bucket", "No facility or bush"]
-for i, label in enumerate(toilet_opts, start=1):
-    choice("toilet_type", str(i), label, PENDING)
+toilet_opts = [
+    ("Flush to sewer", "Fasa ruwa zuwa magudanar ruwa"),
+    ("Flush to septic tank", "Fasa ruwa zuwa tankin najasa"),
+    ("Flush to pit latrine", "Fasa ruwa zuwa rami"),
+    ("Ventilated improved pit", "Rami mai iska (VIP)"),
+    ("Pit latrine with slab", "Rami mai bene"),
+    ("Pit latrine without slab", "Rami marar bene"),
+    ("Composting toilet", "Bayan gida na taki"),
+    ("Bucket", "Bokiti"),
+    ("No facility or bush", "Babu wurin, daji"),
+]
+for i, (label, ha) in enumerate(toilet_opts, start=1):
+    choice("toilet_type", str(i), label, ha)
 
-choice("handwash", "1", "Observed, soap and water", PENDING)
-choice("handwash", "2", "Reported only, not observed", PENDING)
+choice("handwash", "1", "Observed, soap and water", "An gani, akwai sabulu da ruwa")
+choice("handwash", "2", "Reported only, not observed", "An fada kawai, ba a gani ba")
 choice("handwash", "3", "Not present", "Babu")
 
-for code, label in [("A", "Radio"), ("B", "Television"), ("C", "Mobile telephone"),
-                     ("D", "Bicycle"), ("E", "Motorcycle"), ("F", "Car or truck"),
-                     ("G", "Refrigerator"), ("H", "None of these")]:
-    choice("assets", code, label, PENDING)
+for code, label, ha in [("A", "Radio", "Rediyo"), ("B", "Television", "Talabijin"),
+                         ("C", "Mobile telephone", "Wayar hannu"), ("D", "Bicycle", "Keke"),
+                         ("E", "Motorcycle", "Babur"), ("F", "Car or truck", "Mota ko babbar mota"),
+                         ("G", "Refrigerator", "Firji"),
+                         ("H", "None of these", "Babu ko daya daga cikin wadannan")]:
+    choice("assets", code, label, ha)
 
 choice("supervisor_decision", "1", "Accept", "An amince")
-choice("supervisor_decision", "2", "Return for correction", PENDING)
+choice("supervisor_decision", "2", "Return for correction", "A mayar don gyara")
 choice("supervisor_decision", "3", "Void", "An soke")
 
 # Enumerator choice list sourced from staff_roster.csv (verified 120 rows,
 # 24 teams x 5 staff, team codes 1:1 with specimen_label_allocation.csv).
 # Small enough (120 rows) to sit in the survey's own choices sheet safely --
 # unlike settlements (2,524 rows), this does not need external-file treatment.
+# The Hausa column deliberately repeats the English label rather than PENDING:
+# "Enumerator 003 (TM03, Ilela)" is a code/team identifier, not prose -- it
+# needs no translation, and defaulting it to a placeholder was the actual bug
+# (see the block comment above).
 import csv as _csv
 _staff_path = os.path.join(ROOT, "form", "media", "staff_roster.csv")
 with open(_staff_path, encoding="utf-8-sig") as f:
     for r in _csv.DictReader(f):
-        choice("enumerator", r["name"], f"{r['label']} ({r['team_code']}, {r['assigned_lga']})",
-               PENDING)
+        _enum_label = f"{r['label']} ({r['team_code']}, {r['assigned_lga']})"
+        choice("enumerator", r["name"], _enum_label, _enum_label)
 
-# Medicine list: PLACEHOLDER, see constraint register entry above and
-# documentation/03_questionnaire_defects.md, defect D-05.
+# Medicine list: PLACEHOLDER for a MISSING DATA PACK FILE, not a translation
+# gap -- see constraint_register.csv and documentation/01_defects_report.md,
+# defect D-05. Uses its own distinct placeholder so it cannot be mistaken for
+# an ordinary pending-translation item when read in the field.
+MEDICINE_PENDING = "[JERI BAI ISA BA — ana jira daga Ma'aikatar Lafiya]"
 medicine_placeholder = [
     ("01", "Amoxicillin"), ("02", "Amoxicillin-clavulanate"),
     ("03", "Co-trimoxazole (sulfamethoxazole-trimethoprim)"), ("04", "Ampicillin"),
@@ -835,7 +879,7 @@ medicine_placeholder = [
     ("12", "Chloramphenicol"), ("13", "Doxycycline/Tetracycline"),
 ]
 for code, label in medicine_placeholder:
-    choice("medicine_list", code, f"[PLACEHOLDER] {label}", PENDING)
+    choice("medicine_list", code, f"[PLACEHOLDER] {label}", MEDICINE_PENDING)
 choice("medicine_list", "96", "Other", "Wani")
 
 print(f"{len(rows)} survey rows, {len(choices)} choice rows, {len(register)} register rows")

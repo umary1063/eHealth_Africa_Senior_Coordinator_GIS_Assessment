@@ -53,3 +53,16 @@ Reproduce
     # Java 8+ on PATH (required for the ODK Validate step; omit
     # --odk_validate below, or pass --skip_validate, to convert without it)
     python -m pyxform.xls2xform form/HH2026_v1.xlsx conversion/HH2026_v1.xml
+
+Independent confirmation
+-------------------------
+This exact output (Conversion complete!, the same two warnings) was
+independently reproduced by a different tool (XLSForm Online / Enketo's
+staging preview) against the same .xlsx, and the form was then deployed to
+a live KoboToolbox project with the six form/media/*.csv files attached as
+form media and exercised in a browser. That live test surfaced a real
+language-policy bug (a 120-row choice list rendering a placeholder string
+instead of translated content) -- fixed and documented in
+documentation/06_language_and_translation.md. This file's own output above
+is from the current, fixed build; the warnings are unchanged from before
+the fix, confirming the fix did not alter conversion behaviour.

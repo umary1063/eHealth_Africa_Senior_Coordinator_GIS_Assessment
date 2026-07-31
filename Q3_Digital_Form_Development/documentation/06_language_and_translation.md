@@ -36,3 +36,42 @@ professional translations — populating them is a spreadsheet edit, not a form 
 should be completed, back-translated, and cognitively pre-tested with a small sample of the actual
 enumerator corps (ideally including some of the 38% least confident in English) before the next
 fieldwork round, not left for enumerators to work around in the field.
+
+## A real bug this policy caused, found by live field-testing, and fixed
+
+The policy above is "translate short/unambiguous items, mark long/clinical text pending" — but the
+first build applied it inconsistently: every `choice()` call defaulted to the pending placeholder,
+and only a subset of choice lists were manually given real Hausa. That silently swept in several
+choice lists that are unambiguous, everyday vocabulary and should have been translated under the
+policy's own rule — household relationships, water sources, toilet types, household assets,
+supervisor decisions — and, worst, the 120-row enumerator list at question 1.08, where the
+placeholder isn't clinical text at all, it's a code (`ENU003 (TM03, Ilela)`) that needs no
+translation in the first place.
+
+This was found by deploying the form to a live KoboToolbox project with all six media CSVs
+attached and rendering it in the field's own default language (Hausa): with `default_language: ha`,
+question 1.08 — the very first required field after Section 1 opens — showed the same placeholder
+string 120 times in a row, one per enumerator, making it impossible for an enumerator to find and
+select their own code. A printed export of that rendered form ran to 32 pages, most of it that one
+repeated line. This was a real defect in the running form, not a documentation gap, and is fixed
+in the current build:
+
+- Every short, unambiguous choice list (`relationship`, `relationship_member`, `visit_result`,
+  `measure_status`, `measure_position`, `card_seen`, `photo_status`, `no_specimen_reason`,
+  `water_source`, `toilet_type`, `handwash`, `assets`, `supervisor_decision`) now carries real
+  Hausa, consistent with the policy stated above.
+- The `enumerator` list's Hausa column now repeats the English label (a code/team identifier,
+  e.g. `Enumerator 003 (TM03, Ilela)`) rather than a translation placeholder — it was never
+  translatable content, and defaulting it to "pending translation" was simply wrong, not
+  conservative.
+- `medicine_list` keeps a placeholder, but a distinct one (`[JERI BAI ISA BA — ana jira daga
+  Ma'aikatar Lafiya]`, "list not supplied — awaiting the Ministry of Health") rather than reusing
+  the generic translation-pending text, so a data-pack gap (defect D-05) is never confused with an
+  ordinary translation gap again.
+- The generic pending placeholder remains only on genuinely long/clinical sentence-level text
+  (full question wording for the AMR and anthropometry items) and `constraint_message` text,
+  which is what the policy above was actually meant to cover.
+
+`scripts/build_form.py` was regenerated and reconverted after this fix (still converts cleanly —
+see `conversion/conversion_log.txt`), and a check confirmed zero remaining choice rows carry the
+generic pending marker outside `medicine_list`'s dedicated one.
