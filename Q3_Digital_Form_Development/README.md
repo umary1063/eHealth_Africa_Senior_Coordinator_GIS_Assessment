@@ -19,13 +19,30 @@ python -m pyxform.xls2xform form/HH2026_v1.xlsx conversion/HH2026_v1.xml
 
 Result: **Conversion complete!**, exit code 0, two non-blocking warnings (both deliberate scope
 decisions, not oversights — explained in `conversion/conversion_log.txt`). Full log and the
-generated XForm XML are committed in `conversion/`.
+generated XForm XML are committed in `conversion/`. Current form version: `2026073101`
+(`form_id: hh2026_v1`) — see `documentation/07_deployment_and_version_control.md` for the
+versioning scheme and the two revisions before it.
+
+## Live-tested, not just converted
+
+Beyond the conversion check above, this form was deployed and exercised on two real platforms:
+**KoboToolbox** (with all media attached) and a **self-hosted ODK Central instance**
+(`odk.iddsl.com.ng`, Oracle Cloud Always Free tier, Docker Compose behind a Cloudflare Tunnel —
+infrastructure the candidate built independently, recorded in
+`documentation/07_deployment_and_version_control.md`). That live testing caught two real defects
+that static review had missed — a translation-policy bug that rendered a 120-row choice list as
+an identical placeholder string in Hausa, and a relevance bug that made the enumerator's Section 7
+sign-off unreachable in refused/vacant/no-consent outcomes, contradicting the paper form's own
+instruction — both fixed and documented in `documentation/11_scope_and_omissions.md`, item 9, and
+`AI_USE.md`.
 
 ## Repository layout
 
 ```
 Q3_Digital_Form_Development/
 ├── README.md                        this file
+├── index.html                       landing page summarising the deliverable, links to every artefact
+├── Q3_Process_and_Design_Record.docx   narrative process record (methodology, not a duplicate of documentation/)
 ├── constraint_register.csv          central deliverable: every constraint added, what it prevents, its source
 ├── test_plan.csv                    43 test cases with expected results, incl. boundaries and negatives
 ├── form/
@@ -42,18 +59,23 @@ Q3_Digital_Form_Development/
 │   │                                  one set of field definitions, so the two cannot drift apart
 │   └── checkdigit_reference.py       plain-Python mirror of the specimen-label check digit XPath,
 │                                      used to independently generate/verify test vectors
+├── testing/                         live-testing aids only -- not part of the deliverable, see testing/README.md
+│   └── medicine_list_DUMMY_FOR_CENTRAL_TESTING_ONLY.csv   obviously-fake data to unblock manual
+│                                      click-through testing of question 4.13 on a live server
 └── documentation/
     ├── 01_defects_report.md          9 questionnaire defects found; resolved-in-form vs escalated, and why
     ├── 02_sentinel_coding_scheme.md  every sentinel/measurement collision checked; the one real fix
     ├── 03_settlement_list_mechanism.md   serving 2,524 settlements to a 2GB device; alternatives rejected
     ├── 04_specimen_label_validation.md   check-digit scheme, worked test vectors, transposition proof
     ├── 05_duplicate_label_detection.md   what a self-contained form can/cannot enforce, and the real architecture
-    ├── 06_language_and_translation.md    Hausa/English policy and why full translation was not attempted
-    ├── 07_deployment_and_version_control.md   mid-round changes, 9-day offline devices, version tracking
+    ├── 06_language_and_translation.md    Hausa/English policy, the translation bug found live, and why full
+    │                                     translation was not attempted
+    ├── 07_deployment_and_version_control.md   mid-round changes, 9-day offline devices, version tracking,
+    │                                     the self-hosted ODK Central deployment record
     ├── 08_fabrication_detection.md       fields added for QA + the daily check, driven by the fraud case
     ├── 09_data_protection.md             what was configured, what's collected unnecessarily, what I'd cut
     ├── 10_codebook.md                    form fields -> analysis variables, table structure, primary keys
-    └── 11_scope_and_omissions.md         what was not implemented, and why
+    └── 11_scope_and_omissions.md         what was not implemented, why, and every bug found via live testing
 ```
 
 ## How the 14 required items map to this repository
@@ -117,4 +139,7 @@ This submission was produced with Claude (Anthropic) as an assistant: drafting t
 generator script, the documentation, and the test plan, from my reading of the questionnaire and
 reference data and my own design decisions (structural choices, thresholds, and every judgement
 call are attributed as mine throughout the documentation, not presented as sourced when they are
-not). See `../AI_USE.md`.
+not). This includes disclosure of corrections made during review and live testing — notably an
+instance where the AI twice attempted to fill the missing-medicine-list gap (D-05) with substitute
+content before being explicitly redirected to report the gap instead of filling it. See the full
+account in `../AI_USE.md`.

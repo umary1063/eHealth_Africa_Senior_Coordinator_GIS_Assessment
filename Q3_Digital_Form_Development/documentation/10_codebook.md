@@ -28,7 +28,7 @@ Key columns:
 | Column | Source question | Coding | Notes |
 |---|---|---|---|
 | `meta/instanceID` | (system) | UUID | Primary key |
-| `meta/formVersion`... wait, exported as `KEY`/`formVersion` per exporter | (system) | e.g. `2026060100` | See `07_deployment_and_version_control.md` — always retain |
+| `formVersion` (exported as `KEY`/`formVersion` depending on exporter) | (system) | e.g. `2026073101` | See `07_deployment_and_version_control.md` — always retain |
 | `device_id` | (system, added) | free text | Fabrication-detection grouping key, `08_fabrication_detection.md` |
 | `lga`, `ward`, `settlement` | 1.02–1.04 | codes from `lgas.csv`/`wards.csv`/`settlements.csv` | Join back to the register on these codes for names/coordinates |
 | `structure_no`, `hh_serial` | 1.06–1.07 | integer 1–999 | |
