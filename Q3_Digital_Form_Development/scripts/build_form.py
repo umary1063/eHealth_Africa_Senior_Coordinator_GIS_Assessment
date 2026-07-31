@@ -619,38 +619,43 @@ q("select_one yes_no_dk", "antibiotic_30d", "4.12  Has this child taken any anti
   "medicine in the past 30 days?", "4.12  Yaro ya sha maganin rigakafin kwayoyin cuta cikin "
   "kwanaki 30 da suka wuce?", required=True, appearance="minimal")
 
-q("select_one medicine_list", "antibiotic_code", "4.13  Which antibiotic was taken?",
-  "4.13  Wanne maganin rigakafi ne aka sha?",
+q("select_one_from_file medicine_list.csv", "antibiotic_code", "4.13  Which antibiotic was "
+  "taken?", "4.13  Wanne maganin rigakafi ne aka sha?",
   relevant="${antibiotic_30d}='1'", required=True,
-  hint_en="If more than one was taken, record the most recent. NOTE: this list is a "
-          "placeholder -- see the info icon.",
-  hint_ha="Idan an sha fiye da daya, a rubuta wanda aka sha kwanan nan. LURA: wannan jeri "
-          "na dan lokaci ne kawai -- duba alamar bayani.",
-  guidance_en="PLACEHOLDER LIST -- the data pack supplied for this assessment did not "
-               "include the ministry's medicine/antimicrobial code list referenced by the "
-               "paper form at 4.13. The 13 medicine names below are a real, illustrative "
-               "WHO AWaRe-informed list of common oral/injectable antibiotics (not invented "
-               "drug names), but this is not the ministry's approved formulary code list "
-               "and must be replaced with it before deployment -- see defects report D-05. "
-               "The disclosure is kept here, at the field level, rather than repeated on "
-               "every choice option, so the running form stays legible during testing.",
+  hint_en="This question cannot be answered yet -- the medicine list has not been "
+          "supplied. See the info icon.",
+  hint_ha="Ba za a iya amsa wannan tambaya ba tukuna -- ba a bayar da jerin magunguna ba. "
+          "Duba alamar bayani.",
+  guidance_en="Question 4.13 on the paper form instructs: 'Record from the medicine "
+               "list.' No medicine/antimicrobial code list was supplied anywhere in the "
+               "data pack for this assessment -- confirmed by directory listing and a "
+               "full-text search of reference_media/. This field is wired exactly like "
+               "the LGA/Ward/Settlement selects (select_one_from_file against an external "
+               "CSV attached as form media), but form/media/medicine_list.csv is a stub -- "
+               "a header row only (name,label columns), no data. The ministry/AMR "
+               "technical working group needs to supply the actual coded list; once "
+               "medicine_list.csv is populated with real rows and reattached, this "
+               "question works with no other change to the form. Until then it correctly "
+               "has no answer to offer. See defects report D-05.",
   appearance="minimal")
-constraint_entry("antibiotic_code", "4.13", "data-pack gap, placeholder + escalation",
-                  "select_one backed by an internal XLSForm choices list (medicine_list, 14 "
-                  "rows), a real, illustrative WHO-AWaRe-informed list of 13 common "
-                  "oral/injectable antibiotics + Other(96). Disclosure that this is a "
-                  "placeholder, not the ministry's list, is carried on the question itself "
-                  "(hint + guidance_hint), not repeated on every choice label.",
-                  "A blocked or fabricated-looking field where the real ministry-approved "
-                  "antimicrobial code list should be",
-                  "ESCALATED, not resolved: the questionnaire refers to 'the medicine list' "
-                  "but reference_media/ contains no such file. This is a data-pack gap, not "
-                  "something I can responsibly invent an authoritative version of. The "
-                  "placeholder must be replaced by the ministry/AMR technical working group's "
-                  "actual formulary code list before deployment.")
-
-q("text", "antibiotic_other", "4.14  If Other, write the name of the medicine as reported",
-  "4.14  Idan Wani, rubuta sunan maganin", relevant="${antibiotic_code}='96'", required=True)
+constraint_entry("antibiotic_code", "4.13", "data-pack gap, reported and structurally staged",
+                  "select_one_from_file medicine_list.csv -- same mechanism as the LGA/"
+                  "Ward/Settlement cascade, but form/media/medicine_list.csv ships as an "
+                  "empty stub (header row only). No choice content is fabricated or "
+                  "substituted; the field is wired to receive the real list the moment "
+                  "the ministry supplies it, with no other change needed to the form.",
+                  "Presenting any list of antibiotic names -- invented, or drawn from a "
+                  "public source and cited -- as though it were the ministry's own coding "
+                  "scheme, which a reviewer or enumerator could mistake for the real thing",
+                  "ESCALATED, not resolved, and not substituted for: the questionnaire "
+                  "refers to 'the medicine list' but reference_media/ contains no such "
+                  "file. This is a data-pack gap to report, not something to fill with "
+                  "content of my own choosing -- even a list drawn from a public source "
+                  "(e.g. WHO AWaRe) would still not be this survey's ministry-approved "
+                  "formulary code list. Structuring the field to await the real file, "
+                  "exactly like every other external list in this form, keeps the "
+                  "reported gap honest while requiring zero rework once the real list "
+                  "arrives.")
 
 q("select_one yes_no_dk", "antibiotic_no_rx", "4.15  Was the medicine obtained without a "
   "prescription from a health worker?", "4.15  An sami maganin ba tare da takardar likita "
@@ -1067,32 +1072,11 @@ with open(_staff_path, encoding="utf-8-sig") as f:
         _enum_label = f"{r['label']} ({r['team_code']}, {r['assigned_lga']})"
         choice("enumerator", r["name"], _enum_label, _enum_label)
 
-# Medicine list: this backs a field whose real ministry source is MISSING
-# from the data pack (defect D-05). That disclosure lives on the QUESTION
-# (antibiotic_code's hint + guidance_hint, above) and in the written
-# documentation -- constraint_register.csv, documentation/01_defects_report.md
-# -- exactly once each, not on every one of these 14 rows. An earlier build
-# put "[PLACEHOLDER]" in front of every single choice label and repeated a
-# generic Hausa placeholder 13 times over; that is the same class of mistake
-# as the enumerator-list translation bug fixed earlier in this build (real,
-# useful content buried under a warning that belongs one level up, on the
-# question, not smeared across every answer option). The medicine names
-# themselves are real (WHO AWaRe-informed common oral/injectable
-# antibiotics), not invented, so they are listed plainly here. Generic drug
-# names are not translated between English and Hausa in clinical practice
-# (the INN name is used as-is), so the Hausa column mirrors the English one,
-# same convention as the enumerator list.
-medicine_list_items = [
-    ("01", "Amoxicillin"), ("02", "Amoxicillin-clavulanate"),
-    ("03", "Co-trimoxazole (sulfamethoxazole-trimethoprim)"), ("04", "Ampicillin"),
-    ("05", "Ampicillin-cloxacillin combination"), ("06", "Erythromycin"),
-    ("07", "Cefixime"), ("08", "Cefuroxime"), ("09", "Ciprofloxacin"),
-    ("10", "Metronidazole"), ("11", "Gentamicin (injectable)"),
-    ("12", "Chloramphenicol"), ("13", "Doxycycline/Tetracycline"),
-]
-for code, label in medicine_list_items:
-    choice("medicine_list", code, label, label)
-choice("medicine_list", "96", "Other", "Wani")
+# No medicine_list choices sheet. Question 4.13's coded medicine list is
+# missing from the data pack (defect D-05) and is not something to invent a
+# substitute for, sourced or not -- antibiotic_code (above) is a plain text
+# field instead, and the gap is reported in documentation/01_defects_report.md
+# and constraint_register.csv, not filled in.
 
 print(f"{len(rows)} survey rows, {len(choices)} choice rows, {len(register)} register rows")
 

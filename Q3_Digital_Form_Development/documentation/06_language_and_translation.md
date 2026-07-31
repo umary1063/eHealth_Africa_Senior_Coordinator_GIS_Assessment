@@ -15,7 +15,8 @@ just asking about it, record what the vaccination card says rather than what the
 recalls). A handful of fields carry a `guidance_hint` as well -- ODK's separate, collapsed-by-
 default "more info" panel, used only where there is genuinely deeper, optional detail that would
 clutter the primary hint: the GPS accuracy threshold, the WHO recumbent/standing measurement
-convention, the specimen label's check-digit behaviour, and the medicine-list placeholder caveat.
+convention, the specimen label's check-digit behaviour, and the reason question 4.13 has no
+coded medicine list (see D-05 in `01_defects_report.md`).
 `guidance_hint` text is currently English-only, for the same reason `constraint_message` is
 (above): it is the same register of procedural/technical precision, and a wrong translation there
 carries the same risk as a wrong translation of the question text itself.
@@ -82,14 +83,27 @@ in the current build:
   e.g. `Enumerator 003 (TM03, Ilela)`) rather than a translation placeholder — it was never
   translatable content, and defaulting it to "pending translation" was simply wrong, not
   conservative.
-- `medicine_list` keeps a placeholder, but a distinct one (`[JERI BAI ISA BA — ana jira daga
-  Ma'aikatar Lafiya]`, "list not supplied — awaiting the Ministry of Health") rather than reusing
-  the generic translation-pending text, so a data-pack gap (defect D-05) is never confused with an
-  ordinary translation gap again.
+- `antibiotic_code` (4.13) is not a choice list at all any more, in either language — see below.
 - The generic pending placeholder remains only on genuinely long/clinical sentence-level text
   (full question wording for the AMR and anthropometry items) and `constraint_message` text,
   which is what the policy above was actually meant to cover.
 
 `scripts/build_form.py` was regenerated and reconverted after this fix (still converts cleanly —
 see `conversion/conversion_log.txt`), and a check confirmed zero remaining choice rows carry the
-generic pending marker outside `medicine_list`'s dedicated one.
+generic pending marker.
+
+## A second, related mistake: inventing a substitute medicine list
+
+A separate revision briefly gave `antibiotic_code` an illustrative choices list ("common
+antibiotics, WHO AWaRe-informed"), then briefly made it a plain free-text field, to make the
+missing-data-pack gap at question 4.13 less disruptive to the running form. Both were reviewed and
+rejected for reasons independent of translation: the assessment's own instructions ask for defects
+to be identified and reported, not filled in with content of my own choosing, however plausible,
+clearly labelled, or unstructured. `antibiotic_code` is now `select_one_from_file
+medicine_list.csv`, wired exactly like the LGA/Ward/Settlement cascade, but
+`form/media/medicine_list.csv` is a stub with a header row and no data. No antibiotic name
+appears anywhere in the running form until the ministry supplies the real list and it is dropped
+into that CSV. See defect D-05 in `01_defects_report.md` for the full account, including why a
+list drawn from a real public source (WHO AWaRe, a national EML) would still have been the wrong
+call: it still would not have been *this survey's* ministry-approved list, and presenting one at
+all risks being mistaken for it.

@@ -70,7 +70,7 @@ table; filter to `eligible_s4 = 1` and every child-module/specimen column is alr
 | `height_status`, `c_height_cm`, `measure_position` | 4.06–4.07 | status; cm 45.0–130.0 or blank; 1 recumbent/2 standing | Track `measure_position` explicitly — a mid-round switch is expected, not an error, see D on 4.07 |
 | `vacc_card_seen`, `measles_from_card`, `measles_recall`, `measles_status` | 4.08–4.10 | see choices | `measles_status` is the single analysis-ready field; the three raw fields are kept for Q4-style source attribution (card vs. recall) |
 | `diarrhoea_14d` | 4.11 | 1/2/8 | |
-| `antibiotic_30d`, `antibiotic_code`, `antibiotic_other`, `antibiotic_no_rx`, `antibiotic_photo`, `antibiotic_photo_file` | 4.12–4.16 | see choices | `antibiotic_code` is a **placeholder** list — see D-05, do not treat as final coding until the ministry list replaces it |
+| `antibiotic_30d`, `antibiotic_code`, `antibiotic_no_rx`, `antibiotic_photo`, `antibiotic_photo_file` | 4.12–4.16 | see choices; `antibiotic_code` is `select_one_from_file medicine_list.csv` | `medicine_list.csv` ships as an empty stub (header row, zero data rows) — the ministry's medicine list was not supplied (D-05). Until the CSV is populated with the real coded list and reattached, `antibiotic_code` has **no answer available** in the running form; it is not a codeable variable in this build at all, not merely an uncoded one |
 | `specimen_obtained` | 5.02 | 1/2 | Section only shown if age≥12 months (5.01 removed, D-04) |
 | `specimen_label`, `label_digits` | 5.03 | `BSN######-C` / 6-digit substring | Validated per `04_specimen_label_validation.md` |
 | `specimen_cold_box_time`, `specimen_temp_c` | 5.04–5.05 | time; 0.0–12.0°C | |

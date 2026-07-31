@@ -86,25 +86,28 @@ The paper form (4.13) instructs: "Record from the medicine list." No such file e
 lookups the form depends on, but does not include one — confirmed by directory listing and a
 full-text search of the pack for "medicine"/"antibiotic").
 
-**Escalated, not resolved.** `antibiotic_code` is backed by an internal XLSForm choices list
-(`list_name: medicine_list`, 14 rows — small enough to embed directly rather than as an external
-CSV, see `03_settlement_list_mechanism.md` for the size threshold reasoning), an illustrative WHO
-AWaRe-informed list of 13 common oral/injectable antibiotics used in Nigerian primary care plus
-`96 = Other`. The disclosure that this is a placeholder, not the ministry's approved list, is
-carried on the *question* — `antibiotic_code`'s `hint` states it plainly and its `guidance_hint`
-explains why in full (see `06_language_and_translation.md`) — rather than repeated as a
-`[PLACEHOLDER]` prefix on all 13 choice labels, which an earlier build did and which made the
-running form's dropdown unreadable during live testing on KoboToolbox: the medicine names
-themselves are real, not invented, so burying them under a warning repeated 13 times added noise
-without adding disclosure the question-level hint didn't already give. **This is still a genuine
-escalation, not a silent fix**: I am not in a position to know the ministry's actual approved
-antimicrobial formulary code list, and fabricating one and presenting it as authoritative would be
-worse than leaving the gap visible — the gap is disclosed once, clearly, where an enumerator or
-reviewer will actually see it, rather than diluted across every option. The ministry's AMR
-technical working group must supply the real list before deployment; because the choices are a
-self-contained sheet, this is then a one-sheet replacement (or a conversion to an external CSV if
-the real list turns out to be long) that does
-not touch any other form logic.
+**Reported, not resolved, and not substituted for.** Earlier drafts of this form filled the gap
+with an illustrative list of common antibiotics composed from general clinical knowledge — first
+presented with every choice prefixed `[PLACEHOLDER]`, then, after that was found to make the
+running form unreadable during live testing on KoboToolbox, with the placeholder wording moved to
+the question level and the drug names shown plainly ("WHO AWaRe-informed"), and briefly a plain
+free-text field. All three were reviewed and rejected as the same underlying mistake: inventing a
+substitute for missing data-pack content, which is exactly what the assessment's own instructions
+caution against — the common data-pack conditions call for *identifying and reporting* defects,
+not filling them in with material of my own choosing, however clinically plausible, however
+clearly labelled, or however unstructured. A list sourced from a real public document (WHO AWaRe,
+a national Essential Medicines List) would still not be *this survey's* ministry-approved
+formulary code list; free text avoids inventing drug names but still lets the field be answered
+at all, which is not accurate to the actual state of the data pack.
+
+`antibiotic_code` is now `select_one_from_file medicine_list.csv` — wired exactly like the
+LGA/Ward/Settlement cascade (an external CSV attached as form media, `name`/`label` columns) —
+but `form/media/medicine_list.csv` ships as a **stub**: a header row only, zero data rows. No
+antibiotic name, invented or cited, appears anywhere in the running form. The field is structured
+to receive the ministry's actual coded list the moment it is supplied and the CSV is repopulated
+and reattached — no other change to the form is needed — but until then it has, correctly, no
+answer to offer. This is the concrete meaning of "we will ask for the missing choice list": the
+form stays honestly blocked at this one question rather than working around the gap.
 
 ---
 
@@ -188,7 +191,7 @@ paper form never specified.
 | D-02 | Ambiguous instruction | Partially | Yes (enumerator-manual guidance needed) |
 | D-03 | Sentinel/measurement collision | Yes | — |
 | D-04 | Redundant/contradiction-prone question | Yes | — |
-| D-05 | Data-pack gap (missing medicine list) | Placeholder only | Yes |
+| D-05 | Data-pack gap (missing medicine list) | No — field staged (`select_one_from_file` against an empty stub CSV), no substitute content | Yes |
 | D-06 | Unanalysable data (no duration signal) | Yes | — |
 | D-07 | Cross-document inconsistency (fieldwork window) | Working assumption used | Yes |
 | D-08 | Missing/ambiguous skip instruction | Yes | Yes (confirm before next paper print run) |

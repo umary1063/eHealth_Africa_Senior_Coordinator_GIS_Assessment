@@ -31,7 +31,9 @@ Q3_Digital_Form_Development/
 ├── form/
 │   ├── HH2026_v1.xlsx                the XLSForm
 │   └── media/                        external CSVs consumed by the form (settlements, wards, lgas,
-│                                      staff roster, specimen label allocation, previous-round households)
+│                                      staff roster, specimen label allocation, previous-round
+│                                      households, and medicine_list.csv -- a deliberately empty
+│                                      stub, see defect D-05)
 ├── conversion/
 │   ├── HH2026_v1.xml                 pyxform's XForm output
 │   └── conversion_log.txt            tool versions, command, full output, interpretation
@@ -102,8 +104,11 @@ scheme, not three that have to be mentally cross-walked.
 ## Data-pack gap disclosed up front
 
 `reference_media/` does not include a medicine list, although question 4.13 and the pack's own
-`README.md` both refer to one. `antibiotic_code` is backed by a clearly labelled
-`[PLACEHOLDER]` list and must not be treated as the ministry's approved formulary — see
+`README.md` both refer to one. This is reported, not filled in with a substitute: `antibiotic_code`
+is wired exactly like the LGA/Ward/Settlement cascade (`select_one_from_file`), but
+`form/media/medicine_list.csv` ships as a stub — a header row, zero data rows. No antibiotic name,
+invented or sourced from a public document, appears anywhere in the running form; the question
+has no answer to offer until the ministry supplies the real coded list. See
 `documentation/01_defects_report.md`, defect D-05.
 
 ## AI assistance
