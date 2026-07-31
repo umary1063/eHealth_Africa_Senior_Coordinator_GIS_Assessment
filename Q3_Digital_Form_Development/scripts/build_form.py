@@ -622,19 +622,25 @@ q("select_one yes_no_dk", "antibiotic_30d", "4.12  Has this child taken any anti
 q("select_one medicine_list", "antibiotic_code", "4.13  Which antibiotic was taken?",
   "4.13  Wanne maganin rigakafi ne aka sha?",
   relevant="${antibiotic_30d}='1'", required=True,
-  hint_en="If more than one was taken, record the most recent.",
-  hint_ha="Idan an sha fiye da daya, a rubuta wanda aka sha kwanan nan.",
+  hint_en="If more than one was taken, record the most recent. NOTE: this list is a "
+          "placeholder -- see the info icon.",
+  hint_ha="Idan an sha fiye da daya, a rubuta wanda aka sha kwanan nan. LURA: wannan jeri "
+          "na dan lokaci ne kawai -- duba alamar bayani.",
   guidance_en="PLACEHOLDER LIST -- the data pack supplied for this assessment did not "
                "include the ministry's medicine/antimicrobial code list referenced by the "
-               "paper form at 4.13. This list is an illustrative stand-in only (WHO AWaRe-"
-               "informed common oral/injectable antibiotics) and must be replaced with the "
-               "actual ministry AMR technical working group list before deployment -- see "
-               "defects report D-05.",
+               "paper form at 4.13. The 13 medicine names below are a real, illustrative "
+               "WHO AWaRe-informed list of common oral/injectable antibiotics (not invented "
+               "drug names), but this is not the ministry's approved formulary code list "
+               "and must be replaced with it before deployment -- see defects report D-05. "
+               "The disclosure is kept here, at the field level, rather than repeated on "
+               "every choice option, so the running form stays legible during testing.",
   appearance="minimal")
 constraint_entry("antibiotic_code", "4.13", "data-pack gap, placeholder + escalation",
                   "select_one backed by an internal XLSForm choices list (medicine_list, 14 "
-                  "rows), an illustrative WHO-AWaRe-informed list of 13 common oral/injectable "
-                  "antibiotics + Other(96), every label prefixed [PLACEHOLDER]",
+                  "rows), a real, illustrative WHO-AWaRe-informed list of 13 common "
+                  "oral/injectable antibiotics + Other(96). Disclosure that this is a "
+                  "placeholder, not the ministry's list, is carried on the question itself "
+                  "(hint + guidance_hint), not repeated on every choice label.",
                   "A blocked or fabricated-looking field where the real ministry-approved "
                   "antimicrobial code list should be",
                   "ESCALATED, not resolved: the questionnaire refers to 'the medicine list' "
@@ -1061,12 +1067,22 @@ with open(_staff_path, encoding="utf-8-sig") as f:
         _enum_label = f"{r['label']} ({r['team_code']}, {r['assigned_lga']})"
         choice("enumerator", r["name"], _enum_label, _enum_label)
 
-# Medicine list: PLACEHOLDER for a MISSING DATA PACK FILE, not a translation
-# gap -- see constraint_register.csv and documentation/01_defects_report.md,
-# defect D-05. Uses its own distinct placeholder so it cannot be mistaken for
-# an ordinary pending-translation item when read in the field.
-MEDICINE_PENDING = "[JERI BAI ISA BA — ana jira daga Ma'aikatar Lafiya]"
-medicine_placeholder = [
+# Medicine list: this backs a field whose real ministry source is MISSING
+# from the data pack (defect D-05). That disclosure lives on the QUESTION
+# (antibiotic_code's hint + guidance_hint, above) and in the written
+# documentation -- constraint_register.csv, documentation/01_defects_report.md
+# -- exactly once each, not on every one of these 14 rows. An earlier build
+# put "[PLACEHOLDER]" in front of every single choice label and repeated a
+# generic Hausa placeholder 13 times over; that is the same class of mistake
+# as the enumerator-list translation bug fixed earlier in this build (real,
+# useful content buried under a warning that belongs one level up, on the
+# question, not smeared across every answer option). The medicine names
+# themselves are real (WHO AWaRe-informed common oral/injectable
+# antibiotics), not invented, so they are listed plainly here. Generic drug
+# names are not translated between English and Hausa in clinical practice
+# (the INN name is used as-is), so the Hausa column mirrors the English one,
+# same convention as the enumerator list.
+medicine_list_items = [
     ("01", "Amoxicillin"), ("02", "Amoxicillin-clavulanate"),
     ("03", "Co-trimoxazole (sulfamethoxazole-trimethoprim)"), ("04", "Ampicillin"),
     ("05", "Ampicillin-cloxacillin combination"), ("06", "Erythromycin"),
@@ -1074,8 +1090,8 @@ medicine_placeholder = [
     ("10", "Metronidazole"), ("11", "Gentamicin (injectable)"),
     ("12", "Chloramphenicol"), ("13", "Doxycycline/Tetracycline"),
 ]
-for code, label in medicine_placeholder:
-    choice("medicine_list", code, f"[PLACEHOLDER] {label}", MEDICINE_PENDING)
+for code, label in medicine_list_items:
+    choice("medicine_list", code, label, label)
 choice("medicine_list", "96", "Other", "Wani")
 
 print(f"{len(rows)} survey rows, {len(choices)} choice rows, {len(register)} register rows")

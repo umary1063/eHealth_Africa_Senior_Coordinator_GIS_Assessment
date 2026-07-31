@@ -90,13 +90,20 @@ full-text search of the pack for "medicine"/"antibiotic").
 (`list_name: medicine_list`, 14 rows — small enough to embed directly rather than as an external
 CSV, see `03_settlement_list_mechanism.md` for the size threshold reasoning), an illustrative WHO
 AWaRe-informed list of 13 common oral/injectable antibiotics used in Nigerian primary care plus
-`96 = Other`, every choice label prefixed `[PLACEHOLDER]` in the running form so it cannot be
-mistaken for the real list in the field or in a screenshot. **This is a genuine escalation, not a
-silent fix**: I am not in a position to know the ministry's actual approved antimicrobial
-formulary code list, and fabricating one and presenting it as authoritative would be worse than
-leaving the gap visible. The ministry's AMR technical working group must supply the real list
-before deployment; because the choices are a self-contained sheet, this is then a one-sheet
-replacement (or a conversion to an external CSV if the real list turns out to be long) that does
+`96 = Other`. The disclosure that this is a placeholder, not the ministry's approved list, is
+carried on the *question* — `antibiotic_code`'s `hint` states it plainly and its `guidance_hint`
+explains why in full (see `06_language_and_translation.md`) — rather than repeated as a
+`[PLACEHOLDER]` prefix on all 13 choice labels, which an earlier build did and which made the
+running form's dropdown unreadable during live testing on KoboToolbox: the medicine names
+themselves are real, not invented, so burying them under a warning repeated 13 times added noise
+without adding disclosure the question-level hint didn't already give. **This is still a genuine
+escalation, not a silent fix**: I am not in a position to know the ministry's actual approved
+antimicrobial formulary code list, and fabricating one and presenting it as authoritative would be
+worse than leaving the gap visible — the gap is disclosed once, clearly, where an enumerator or
+reviewer will actually see it, rather than diluted across every option. The ministry's AMR
+technical working group must supply the real list before deployment; because the choices are a
+self-contained sheet, this is then a one-sheet replacement (or a conversion to an external CSV if
+the real list turns out to be long) that does
 not touch any other form logic.
 
 ---
