@@ -143,7 +143,7 @@ def choice(list_name, name, label_en, label_ha=PENDING, **extra):
 settings = {
     "form_title": "Integrated Child Health and AMR Household Survey 2026",
     "form_id": "hh2026_v1",
-    "version": "2026060100",
+    "version": "2026073100",
     "default_language": "Hausa (ha)",
     "instance_name": "concat(${lga_name_txt}, '-', ${settlement_code}, '-', ${structure_no}, '-', ${hh_serial})",
     # theme-grid: renders the Section 3 roster repeat as a spreadsheet-style
