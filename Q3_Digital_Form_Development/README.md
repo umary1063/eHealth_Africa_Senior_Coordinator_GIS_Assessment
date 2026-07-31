@@ -42,6 +42,7 @@ instruction — both fixed and documented in `documentation/11_scope_and_omissio
 Q3_Digital_Form_Development/
 ├── README.md                        this file
 ├── index.html                       landing page summarising the deliverable, links to every artefact
+├── Q3_Response.docx                  direct response to the 14 numbered requirements, linked to GitHub
 ├── Q3_Process_and_Design_Record.docx   narrative process record (methodology, not a duplicate of documentation/)
 ├── constraint_register.csv          central deliverable: every constraint added, what it prevents, its source
 ├── test_plan.csv                    43 test cases with expected results, incl. boundaries and negatives
