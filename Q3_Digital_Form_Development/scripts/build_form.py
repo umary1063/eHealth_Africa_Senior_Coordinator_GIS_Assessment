@@ -86,14 +86,17 @@ def note(name, label_en, label_ha=PENDING, relevant=None):
     add(r)
 
 
-def calc(name, calculation):
-    add({"type": "calculate", "name": name, "calculation": calculation})
+def calc(name, calculation, save_to=None):
+    r = {"type": "calculate", "name": name, "calculation": calculation}
+    if save_to:
+        r["save_to"] = save_to
+    add(r)
 
 
 def q(type_, name, label_en, label_ha=PENDING, hint_en="", hint_ha="",
       required=False, relevant=None, constraint=None, constraint_message=None,
       appearance=None, default=None, read_only=False, choice_filter=None,
-      calculation=None, guidance_en="", guidance_ha=""):
+      calculation=None, guidance_en="", guidance_ha="", save_to=None):
     r = {
         "type": type_, "name": name,
         "label::English (en)": label_en, "label::Hausa (ha)": label_ha,
@@ -124,6 +127,8 @@ def q(type_, name, label_en, label_ha=PENDING, hint_en="", hint_ha="",
         r["choice_filter"] = choice_filter
     if calculation:
         r["calculation"] = calculation
+    if save_to:
+        r["save_to"] = save_to
     add(r)
 
 
@@ -137,13 +142,27 @@ def choice(list_name, name, label_en, label_ha=PENDING, **extra):
     choices.append(row)
 
 
+entities = []  # ODK Entities lists declared on the "entities" sheet
+
+
+def entity(dataset, label, create_if=None, entity_id=None, update_if=None):
+    row = {"dataset": dataset, "label": label}
+    if create_if:
+        row["create_if"] = create_if
+    if entity_id:
+        row["entity_id"] = entity_id
+    if update_if:
+        row["update_if"] = update_if
+    entities.append(row)
+
+
 # ===========================================================================
 # SETTINGS
 # ===========================================================================
 settings = {
     "form_title": "Integrated Child Health and AMR Household Survey 2026",
     "form_id": "hh2026_v1",
-    "version": "2026073101",
+    "version": "2026080101",
     "default_language": "Hausa (ha)",
     "instance_name": "concat(${lga_name_txt}, '-', ${settlement_code}, '-', ${structure_no}, '-', ${hh_serial})",
     # theme-grid: renders the Section 3 roster repeat as a spreadsheet-style
@@ -192,6 +211,28 @@ constraint_entry("device_id (system)", "n/a (added)", "added field",
                   "Cannot attribute submissions to a specific tablet for the per-device "
                   "duplicate-label check (requirement 8) or for device-level QA dashboards",
                   "My judgement")
+
+# ===========================================================================
+# ODK ENTITIES: used_specimen_labels
+# Requirement 8 asks whether a self-contained form can reject a specimen
+# label already used in an earlier submission from the same device, and to
+# implement whatever part is achievable in the form itself. A same-submission
+# check (specimen_label's own constraint, below) only catches a label reused
+# twice within one household. ODK Entities close most of the remaining gap:
+# Collect maintains a local copy of the used_specimen_labels dataset and
+# updates it immediately after every local finalize, including while
+# offline, so a label reused in a *later*, separate household submission on
+# the *same device* is also caught -- not just the immediately preceding one.
+# What this still cannot do alone is catch a label reused across two
+# different devices that have not yet synced to Central; that residual gap
+# is architectural (Central-side reconciliation on sync), not a form defect,
+# and is documented as such in documentation/05_duplicate_label_detection.md.
+# ===========================================================================
+entity(
+    "used_specimen_labels",
+    label="${specimen_label}",
+    create_if="${specimen_obtained}='1' and string-length(${specimen_label}) > 0",
+)
 
 # ===========================================================================
 # SECTION 1: HOUSEHOLD IDENTIFICATION
@@ -751,28 +792,41 @@ q("text", "specimen_label", "5.03  Specimen label number (affix label, then tran
              "number(substr(.,3,6)) >= number(${label_range_start}) and "
              "number(substr(.,3,6)) <= number(${label_range_end}) and "
              "substr(.,10,1) = ${label_check_expected} and "
-             "count(../../../roster/specimen/specimen_label[. = current()]) <= 1",
+             "count(../../../roster/specimen/specimen_label[. = current()]) <= 1 and "
+             "count(instance('used_specimen_labels')/root/item[specimen_label_value = current()]) = 0",
   constraint_message="Label must be format BSN######-C, in your team's allocated range, with a "
-                      "valid check digit, and not already used for another child in this same "
-                      "household submission.")
-constraint_entry("specimen_label", "5.03", "format + range + check-digit + within-submission dedup",
+                      "valid check digit, not already used for another child in this same "
+                      "household submission, and not already used in an earlier submission on "
+                      "this device.",
+  save_to="specimen_label_value")
+# Same repeat/group scope as specimen_label (see AllocationRequest in
+# pyxform's entities_parsing.py) so both save_to a single entity per
+# specimen, not two separately-scoped entities.
+calc("specimen_device_id_for_entity", "${device_id}", save_to="device_id_value")
+calc("specimen_label_saved_at", "now()", save_to="entered_at")
+constraint_entry("specimen_label", "5.03", "format + range + check-digit + within-submission dedup "
+                  "+ ODK Entities cross-submission dedup",
                   "regex ^BSN[0-9]{6}-[0-9X]$; 6-digit body inside the enumerator's own team "
                   "range (pulldata from specimen_label_allocation.csv); check character "
                   "recomputed via modulus-11, weights 2-7 right to left, and compared to the "
                   "entered character; must not repeat within this same household's roster "
                   "(count of matching labels across all roster/specimen/specimen_label nodes "
-                  "in this submission <= 1)",
+                  "in this submission <= 1); must not match any entity already recorded in the "
+                  "used_specimen_labels dataset on this device (count(instance("
+                  "'used_specimen_labels')/root/item[specimen_label_value = current()]) = 0)",
                   "Mistyped labels, a label affixed and typed from outside the team's "
                   "allocated block (allocation confirmed contiguous, no gaps/overlaps across "
                   "24 teams x 900 labels each, 480000-501599), transposed-digit-pair errors "
-                  "the check digit is specifically designed to catch, and the same physical "
-                  "label being typed twice for two different children in the same household",
+                  "the check digit is specifically designed to catch, the same physical label "
+                  "being typed twice for two different children in the same household, and (via "
+                  "Entities) the same label being typed again in a later, separate household "
+                  "submission on the same device -- the residual gap requirement 8 asks about",
                   "specimen_label_allocation.csv (24 rows) for the range; check-digit scheme "
                   "text in that same file ('Modulus 11, weights 2 to 7 applied right to left, "
                   "remainder 10 recorded as X'). See documentation/04_specimen_label_"
                   "validation.md for worked test vectors, and documentation/05_duplicate_"
-                  "label_detection.md for why a same-submission check only catches labels "
-                  "reused within one household and not the full 9-day device history.")
+                  "label_detection.md for the full architecture, what Entities does and does not "
+                  "cover, and the live-instance verification record.")
 constraint_entry("specimen_label appearance (bug fix)", "5.03", "appearance removed",
                   "An earlier build set appearance='numbers' on this field, which restricts "
                   "the on-screen keyboard to digits only. This field's own format is "
@@ -1113,10 +1167,11 @@ SURVEY_COLS = [
     "guidance_hint::English (en)", "guidance_hint::Hausa (ha)",
     "required", "relevant",
     "constraint", "constraint_message::English (en)", "calculation",
-    "appearance", "default", "read_only", "choice_filter",
+    "appearance", "default", "read_only", "choice_filter", "save_to",
 ]
 CHOICE_COLS = ["list_name", "name", "label::English (en)", "label::Hausa (ha)"]
 SETTINGS_COLS = list(settings.keys())
+ENTITY_COLS = ["dataset", "entity_id", "create_if", "update_if", "label"]
 
 wb = openpyxl.Workbook()
 ws_survey = wb.active
@@ -1133,6 +1188,11 @@ for r in choices:
 ws_settings = wb.create_sheet("settings")
 ws_settings.append(SETTINGS_COLS)
 ws_settings.append([settings[c] for c in SETTINGS_COLS])
+
+ws_entities = wb.create_sheet("entities")
+ws_entities.append(ENTITY_COLS)
+for r in entities:
+    ws_entities.append([r.get(c, "") for c in ENTITY_COLS])
 
 os.makedirs(os.path.dirname(FORM_PATH), exist_ok=True)
 wb.save(FORM_PATH)

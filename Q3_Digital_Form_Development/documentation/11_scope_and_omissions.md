@@ -2,12 +2,16 @@
 
 Q3 requirement 14. Everything below was considered and left out on purpose, not missed.
 
-1. **ODK Entities for full cross-submission duplicate-label detection.** Described in full in
-   `05_duplicate_label_detection.md` as the correct production architecture. Not implemented
-   because I cannot test it against a real ODK Central/Collect instance in this environment, and
-   an untested Entities declaration risks either failing to convert or silently not behaving as
-   claimed — worse than the honest gap. What *is* achievable without that risk (a same-submission
-   duplicate check) is implemented.
+1. **ODK Entities for full cross-submission duplicate-label detection — implemented and verified,
+   2026-08-01.** Originally scoped out here because it could not be tested against a real ODK
+   Central/Collect instance. That instance later became available; the feature is now implemented
+   (an `entities` sheet, `save_to` bindings, and an added constraint clause on `specimen_label`)
+   and its create-side mechanism verified end to end against a live Central instance — full detail
+   and the one remaining unverified piece (a live client-side rejection click-through, inconclusive
+   due to browser-automation limits in the verification session, not a form defect) in
+   `05_duplicate_label_detection.md`. Left listed here, updated rather than deleted, so the record
+   shows this item moved from "deliberately out of scope" to "done" rather than quietly
+   disappearing.
 
 2. **Full Hausa translation of question text and constraint messages — escalated, not resolved.**
    Structural support (language columns, default language) is complete; the translations

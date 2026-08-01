@@ -14,7 +14,7 @@ Tool versions used:
 Output:
     Warnings:
     Language 'Hausa (ha)' is missing the survey constraint_message column.
-    [row : 67] Use the max-pixels parameter to speed up submission sending and save storage space. Learn more: https://xlsform.org/#image
+    [row : 66] Use the max-pixels parameter to speed up submission sending and save storage space. Learn more: https://xlsform.org/#image
     Conversion complete!
 
 Exit code: 0
@@ -66,3 +66,21 @@ instead of translated content) -- fixed and documented in
 documentation/06_language_and_translation.md. This file's own output above
 is from the current, fixed build; the warnings are unchanged from before
 the fix, confirming the fix did not alter conversion behaviour.
+
+Update 2026-08-01: ODK Entities addition
+------------------------------------------
+The form gained an `entities` sheet, `save_to` bindings, and an added
+constraint clause on specimen_label (documentation/05_duplicate_label_
+detection.md, requirement 8), version bumped 2026073101 -> 2026080101. The
+same two warnings above, and no new ones, were produced converting this
+version -- confirmed twice independently: once locally with the same
+pyxform 4.5.0 shown above, and once via Central's own bundled pyxform-http
+service when the new version was published to a live, self-hosted ODK
+Central instance (v2026.2.1). A real submission to that published form
+created a real entity in the used_specimen_labels dataset with properties
+exactly matching the values submitted, confirmed via Central's entity API
+-- the create-side mechanism that was the genuine unverified risk before
+this update. Full account, including what remains unverified (a live
+client-side rejection click-through, inconclusive due to browser-automation
+limits rather than a form defect): documentation/05_duplicate_label_
+detection.md.

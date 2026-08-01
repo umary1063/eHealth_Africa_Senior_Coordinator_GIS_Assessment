@@ -133,6 +133,36 @@ cross-references (`constraint_register.csv` row C022, which is an unrelated keyb
 fix, and `documentation/01_defects_report.md`, which does not discuss the household-size-vs-roster
 check at all) and was corrected to cite the actual rule, row C024.
 
+**Requirement 8 (ODK Entities) implemented and verified, 2026-08-01.** The written response
+originally described ODK Entities as the correct production architecture for full cross-submission
+duplicate-label detection but stated it was not implemented, because it could not be tested against
+a real ODK Central/Collect instance with confidence. The candidate pointed out this was inconsistent
+with already having a self-hosted ODK Central instance, and gave explicit, scoped authorization to
+test against it — a shared host running the candidate's other production services alongside Central,
+so Claude confirmed the scope (stay inside `/data/apps/odk-central` only) before proceeding.
+
+Access was arranged without Claude ever handling the candidate's real credentials: the candidate
+created a dedicated test Web User (`claude-entities-test@iddsl.com.ng`) via Central's own CLI, and
+separately obtained a session bearer token via the standard `/v1/sessions` login endpoint, which was
+the only credential Claude used. At one point the candidate offered their real admin password
+directly in chat; Claude declined to use it and flagged that the candidate should rotate it, since
+typing it into chat had exposed it in the transcript regardless of whether Claude used it.
+
+Claude then: added an `entities` sheet, `save_to` bindings, and an added constraint clause to
+`scripts/build_form.py`; verified the result compiled cleanly via two independent pyxform 4.5.0
+runs (locally, and via Central's own bundled `pyxform-http` service); and, with the candidate's
+explicit go-ahead, published the new form version live on the candidate's Central project (replacing
+the version the candidate's own public form link had been serving) and submitted real test data to
+it via the API. This confirmed the create-side mechanism end to end: a real entity was created with
+properties exactly matching the submitted values. A further attempt to confirm the client-side
+rejection by clicking through the live ODK Web Forms UI in a real browser session was inconclusive —
+the automation had unrelated trouble committing values into a few masked input widgets, a limitation
+of that verification session, not of the form — and this is disclosed as unconfirmed rather than
+assumed. Full technical account, including exactly what was and was not proven:
+`documentation/05_duplicate_label_detection.md`. `documentation/11_scope_and_omissions.md`,
+`constraint_register.csv` (row C021), `conversion/conversion_log.txt`, and `Q3_Response.docx`
+(Requirement 8) were all updated to match, rather than only the response document.
+
 ## Q5 — Technical Coordination, and Q6 — Capability Development
 
 Claude (Anthropic, Claude Sonnet 5, in Claude Code) drafted the prose of both written responses

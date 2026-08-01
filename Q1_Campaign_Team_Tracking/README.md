@@ -1,58 +1,58 @@
-# Question 1: Campaign Team Tracking and Coverage Reconciliation
+# 🗺️ Question 1: Campaign Team Tracking and Coverage Reconciliation
 
-## Purpose
+## 🎯 Purpose
 
-This component addresses the assessment scenario of a five-day house-to-house supplementary immunization activity. It establishes a reproducible approach for evaluating operational GPS tracking evidence, reconciling it with reported vaccination activity, and producing decision-ready coverage information.
+A five-day house-to-house vaccination campaign supplied GPS tracker logs, a list of planned villages, daily tally reports, and administrative boundaries. This component turns those raw, messy inputs into a reliable answer to one question: **which villages actually got visited, and how does that compare to what was reported?**
 
-## Campaign Tracking Problem
+## ❓ The problem
 
-GPS logger observations, planned settlement locations, daily e-tally reports, and administrative boundaries provide complementary but imperfect views of campaign delivery. The work will assess data quality, determine whether planned settlements were visited, reconcile track-derived coverage with reported doses, and identify areas that may require operational follow-up.
+GPS logs, the settlement list, tally reports, and administrative boundaries each tell part of the story — and each has gaps. The work here checks the GPS data for quality problems, works out which planned settlements were actually visited, compares that against what teams reported, and flags areas that may need a follow-up visit.
 
-## Planned Workflow
+## ⚙️ Pipeline
 
 ```text
 Raw GPS data
     → spatial database
-    → quality assurance
-    → settlement attribution
-    → coverage reconciliation
-    → hotspot analysis
-    → decision products
+    → quality checks
+    → match points to settlements
+    → compare to tally reports
+    → cluster analysis
+    → maps & decision brief
 ```
 
-## Documentation
+## 📚 Documentation
 
-- [Methodology](methodology.md) records the analytical approach and its assumptions.
-- [Technical decisions](technical_decisions.md) records material design choices and their rationale.
-- [Data dictionary](data_dictionary.md) describes the supplied source datasets and derived data assets as they are defined.
+- 📖 [Methodology](methodology.md) — the approach and the assumptions behind it
+- 🧾 [Technical decisions](technical_decisions.md) — every material design choice and why it was made
+- 📇 [Data dictionary](data_dictionary.md) — what every source and derived dataset actually contains
 
-## Q1 Outputs
+## 📊 Results
 
-GPS QA outputs are screening indicators that support downstream analysis and operational review. They are not automatic exclusion criteria: flagged observations remain available for documented interpretation in later stages.
+Quality flags are used as screening signals, not automatic deletions — a flagged GPS point stays available for review rather than silently disappearing. Settlement visits are checked under a primary scenario and two sensitivity scenarios, since GPS proximity is evidence of a visit, not proof of service delivery.
 
-Settlement attribution is evaluated under separate baseline and sensitivity scenarios. Proximity evidence supports visit classification but does not itself prove service delivery.
+### 🐛 A real defect, found and fixed (2026-07-31)
 
-**Fully revised 2026-07-31.** A read-only audit found that the supplied GPS track files, despite
-being named one file per team per day, actually contain 6–21 days of continuous logging each;
-for 66 of 160 team-days two different files both produced GPS fixes during real duty hours on the
-same real campaign date, which is physically impossible for one team and was silently corrupting
-attribution. Correcting this properly required finding and fixing three further, compounding
-defects: a 1000x unit-conversion bug in the implausible-speed rule; that same rule's sequence
-computations still crossing contaminated files after the first fix; and a stale-flag-accumulation
-bug that silently re-polluted two earlier correction attempts within this same review before being
-found. All four are documented in [technical_decisions.md](technical_decisions.md) (2026-07-31
-entries), including the false starts, because a live technical walkthrough is exactly the kind of
-setting where "why did the number change three times" needs a real answer. The numbers below are
-from the final pipeline re-run, verified consistent between the database and every output file.
+A routine check found the GPS files were secretly wrong: although each file was meant to hold one team's tracks for one day, the files actually contained 6–21 days of continuous logging each. For 66 of 160 team-days, two different files showed the same team in two places at once during real duty hours — physically impossible. Fixing that properly uncovered three more linked bugs (a 1000× unit-conversion error, leftover cross-file contamination in the same rule, and a bug where old wrong flags never cleared between re-runs). All four are documented in full in [`technical_decisions.md`](technical_decisions.md), including the two wrong "final" numbers reported along the way, because a live walkthrough is exactly the setting where "why did this number change three times" deserves a real answer. Every number below is from the final, fully-corrected pipeline run, checked to match between the database and every output file.
 
-Validated attribution classified 139 settlements as visited under the 30 m baseline. A 60 m sensitivity scenario increased this to 171 while also increasing ambiguous classifications; the urban accuracy-aware scenario classified 142 settlements as visited. The baseline remains the primary operational estimate.
+### ✅ Headline numbers
 
-Coverage reconciliation found a substantial 73.26 percentage-point gap between baseline GPS coverage (5.43%) and e-tally-reported coverage (78.69%, essentially unchanged by the GPS-side fixes). The reconciled product is the operational decision source; mismatches require rapid verification before mop-up. The gap's size is itself part of the evidence: e-tally reporting this high is implausible against a literal 5.43% physical-coverage rate, so the reconciliation brief treats this as most consistent with GPS-attribution and data-density limitations rather than a literal near-total delivery failure.
+| Metric | Result |
+|---|---|
+| 🏘️ Settlements visited (30 m baseline) | **139** |
+| 🏘️ Settlements visited (60 m sensitivity) | 171 (more ambiguous cases too) |
+| 🏘️ Settlements visited (urban accuracy-aware) | 142 |
+| 📡 GPS-confirmed coverage | **5.43%** |
+| 📝 Tally-reported coverage | 78.69% |
+| ⚠️ Gap between the two | 73.26 percentage points |
 
-Requirement 5 found positive global autocorrelation in the observed GPS-derived missed indicator under the primary k=8 weights (Global Moran's I 0.020281; permutation p=0.026). No local results remained significant after FDR correction, so raw local patterns are retained for screening rather than presented as confirmed local clusters. The ambiguity-included sensitivity scenario lost significance entirely after the correction (p=0.140) — reported plainly rather than smoothed over. See [the spatial-statistics method](docs/missed_settlement_cluster_method.md) for weights, sensitivity analyses, and interpretation limits.
+That gap is too large to be genuine under-delivery — a tally system reporting 78.69% next to a real 5.43% physical coverage rate isn't plausible. The decision brief treats this as strong evidence of a data problem, not proof that most villages went unserved, and recommends rapid verification before any mop-up round.
 
-The primary analysis contains 2,318 non-ambiguous settlements (2,179 unvisited and 139 visited). It uses EPSG:32632 binary, row-standardized k=8 nearest-neighbour weights, 999 permutations, seed `20260730`, and Benjamini-Hochberg FDR correction. The 9,050 m distance-band and ambiguity-included scenarios are sensitivity analyses only.
+### 📍 Cluster analysis (Requirement 5)
 
-## Requirement 6 Decision Products
+The missed-settlement pattern clusters together more than random chance would explain (Global Moran's I = 0.020281, p = 0.026, using each settlement's 8 nearest neighbours). But once that's corrected for testing thousands of small areas individually, no single local area stays significant — so the local patterns guide *where to look*, not confirmed hotspots. See [the method note](docs/missed_settlement_cluster_method.md) for the full statistical detail.
 
-The A3 technical map and Incident Manager brief translate observed evidence into cautious operational recommendations. A GPS-unvisited classification means no confirmed GPS visit evidence under the baseline method; it is not proof that a settlement was genuinely missed. Recommendations state evidence confidence and prioritize rapid verification, supervisor follow-up, device inspection, repeat-visit confirmation, and data reconciliation before mop-up deployment or any performance conclusion.
+The primary analysis covers 2,318 clearly-classified settlements (2,179 unvisited, 139 visited), using projected coordinates, 999 random permutations, and the Benjamini-Hochberg correction for multiple testing.
+
+## 🚨 Decision products (Requirement 6)
+
+The A3 map and Incident Manager brief turn the evidence above into cautious, actionable recommendations. **A missing GPS track is never treated as proof a settlement was missed** — every recommendation states how confident the evidence is, and prioritizes verification, device checks, and repeat-visit confirmation before any mop-up deployment or performance judgement.
